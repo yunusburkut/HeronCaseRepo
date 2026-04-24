@@ -17,8 +17,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [Header("Settings")]
     [SerializeField] private float waterSlotHeight = 0.5f;
     [SerializeField] private int defaultCapacity = 3;
-    [SerializeField] private Color selectedColor;
-    [SerializeField] private Color solvedColor;
 
     [Header("Animation")]
     [SerializeField] private float liftAmount = 0.3f;
@@ -29,7 +27,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private readonly List<WaterView> _waters = new List<WaterView>();
     private int _capacity;
-    private Color _defaultColor;
     private bool _isSelected;
     private WaterView _waterPrefab;
     private Vector3 _restLocalPos;
@@ -67,6 +64,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
                 }
                 count++;
             }
+            
             return count;
         }
     }
@@ -81,7 +79,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _waterPrefab = waterPrefab;
         _capacity = data.capacity;
-        _defaultColor = tubeRenderer.color;
 
         ResizeTube(_capacity);
         _restLocalPos = transform.localPosition;
@@ -101,12 +98,12 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _pendingOnComplete = onComplete;
         transform.DOKill();
-        float snapY = _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y;
+        var snapY = _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y;
         transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
 
-        float x = _restLocalPos.x;
-        const float d = 0.08f;
-        const float t = 0.04f;
+        var x = _restLocalPos.x;
+        float d = 0.08f;//todo check magic numbers
+        float t = 0.04f;
 
         DOTween.Sequence()
             .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutQuad))
@@ -117,25 +114,45 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
             .OnComplete(_cachedOnComplete);
     }
 
-    public void TrySetSolved()
+    public bool IsSingleColor
     {
-        if (IsSolved || !IsFull)
+        get
         {
-            return;
-        }
-
-        var first = _waters[0].Color;
-        for (var i = 1; i < _waters.Count; i++)
-        {
-            if (_waters[i].Color != first)
+            if (_waters.Count == 0)
             {
-                return;
+                return false;
+            }
+            
+            var first = _waters[0].Color;
+            for (var i = 1; i < _waters.Count; i++)
+            {
+                if (_waters[i].Color != first)
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+    }
+
+    public bool HasColor(Color color)
+    {
+        for (var i = 0; i < _waters.Count; i++)
+        {
+            if (_waters[i].Color == color)
+            {
+                return true;
             }
         }
+        
+        return false;
+    }
 
+    public void MarkSolved()
+    {
         IsSolved = true;
         tubeCollider.enabled = false;
-        tubeRenderer.color = solvedColor;
         transform.DOKill();
         transform.localPosition = _restLocalPos;
         transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 5, 0.5f);
@@ -144,8 +161,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     public void SetSelected(bool selected)
     {
         _isSelected = selected;
-        tubeRenderer.color = _isSelected ? selectedColor : _defaultColor;
-
+        //todo add outline hover
         transform.DOKill();
         transform.DOLocalMoveY(
             _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y,
@@ -183,6 +199,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         var color = TopColor;
         var toMove = Mathf.Min(TopColorCount, target.AvailableSlots);
+        
         for (var i = 0; i < toMove; i++)
         {
             RemoveTopWater();

@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
     private void OnPourComplete()
     {
         _isAnimating = false;
-        CheckAfterPour(_pourFrom, _pourTo);
+        CheckAfterPour(_pourTo);
     }
 
     private void OnLevelComplete()
@@ -90,14 +90,28 @@ public class GameController : MonoBehaviour
         OnLevelCompletedTest.SetActive(true);
     }
 
-    private void CheckAfterPour(TubeView from, TubeView to)
+    private void CheckAfterPour(TubeView to)
     {
-        from.TrySetSolved();
-        to.TrySetSolved();
+        //TryMarkSolved(from); todo unnecessary due to gameplay logic lol but check after complete all the logics
+        TryMarkSolved(to);
 
         if (MoveValidator.IsLevelComplete(_allTubes))
         {
             OnLevelCompleted?.Invoke();
         }
+    }
+
+    private void TryMarkSolved(TubeView tube)
+    {
+        if (tube.IsSolved || tube.IsEmpty || !tube.IsSingleColor) return;
+
+        var color = tube.TopColor;
+        foreach (var t in _allTubes)
+        {
+            if (t == tube || t.IsEmpty) continue;
+            if (t.HasColor(color)) return;
+        }
+
+        tube.MarkSolved();
     }
 }
