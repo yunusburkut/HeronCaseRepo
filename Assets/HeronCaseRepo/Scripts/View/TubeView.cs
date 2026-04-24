@@ -149,13 +149,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         return false;
     }
 
-    public void MarkSolved()
+    public Tween MarkSolved()
     {
         IsSolved = true;
         tubeCollider.enabled = false;
         transform.DOKill();
         transform.localPosition = _restLocalPos;
-        transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 5, 0.5f);
+        return transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 5, 0.5f);
     }
 
     public void SetSelected(bool selected)

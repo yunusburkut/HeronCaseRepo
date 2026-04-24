@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -93,25 +94,34 @@ public class GameController : MonoBehaviour
     private void CheckAfterPour(TubeView to)
     {
         //TryMarkSolved(from); todo unnecessary due to gameplay logic lol but check after complete all the logics
-        TryMarkSolved(to);
+        var tween = TryMarkSolved(to);
 
-        if (MoveValidator.IsLevelComplete(_allTubes))
+        if (!MoveValidator.IsLevelComplete(_allTubes))
+        {
+            return;
+        }
+
+        if (tween != null)
+        {
+            tween.OnComplete(() => OnLevelCompleted?.Invoke());
+        }
+        else
         {
             OnLevelCompleted?.Invoke();
         }
     }
 
-    private void TryMarkSolved(TubeView tube)
+    private Tween TryMarkSolved(TubeView tube)
     {
-        if (tube.IsSolved || tube.IsEmpty || !tube.IsSingleColor) return;
+        if (tube.IsSolved || tube.IsEmpty || !tube.IsSingleColor) return null;
 
         var color = tube.TopColor;
         foreach (var t in _allTubes)
         {
             if (t == tube || t.IsEmpty) continue;
-            if (t.HasColor(color)) return;
+            if (t.HasColor(color)) return null;
         }
 
-        tube.MarkSolved();
+        return tube.MarkSolved();
     }
 }
