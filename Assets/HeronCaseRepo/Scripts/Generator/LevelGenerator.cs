@@ -6,6 +6,7 @@ public class LevelGenerator : MonoBehaviour
 {
     [Header("Data")]
     [SerializeField] private LevelData levelData;
+    [SerializeField] private WaterColorPalette colorPalette;
 
     [Header("Prefabs")]
     [SerializeField] private TubeView tubePrefab;
@@ -37,9 +38,11 @@ public class LevelGenerator : MonoBehaviour
             var pos = new Vector3(startX + i * tubeSpacing, 0f, 0f);
             var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
             tubeView.name = $"Tube_{i}";
-            tubeView.Init(tubeData, waterPrefab);
+            tubeView.Init(tubeData, waterPrefab, colorPalette);
             tubeView.OnClicked += gameController.OnTubeClicked;
             _tubeViews.Add(tubeView);
         }
+
+        gameController.Initialize(_tubeViews);
     }
 }

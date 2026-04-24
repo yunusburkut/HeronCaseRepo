@@ -18,6 +18,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float waterSlotHeight = 0.5f;
     [SerializeField] private int defaultCapacity = 3;
     [SerializeField] private Color selectedColor;
+    [SerializeField] private Color solvedColor;
 
     [Header("Animation")]
     [SerializeField] private float liftAmount = 0.3f;
@@ -37,10 +38,35 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public bool IsFull => _waters.Count >= _capacity;
     public bool IsEmpty => _waters.Count == 0;
+    public bool IsSolved { get; private set; }
     public Color TopColor => _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
+    public int AvailableSlots => _capacity - _waters.Count;
     public Vector3 HeadWorldPos => tubeHead.position;
 
-    public void Init(TubeData data, WaterView waterPrefab)
+    public int TopColorCount
+    {
+        get
+        {
+            if (_waters.Count == 0)
+            {
+                return 0;
+            }
+
+            Color top = _waters[_waters.Count - 1].Color;
+            int count = 0;
+            for (int i = _waters.Count - 1; i >= 0; i--)
+            {
+                if (_waters[i].Color != top)
+                {
+                    break;
+                }
+                count++;
+            }
+            return count;
+        }
+    }
+
+    public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
     {
         _waterPrefab = waterPrefab;
         _capacity = data.capacity;
@@ -51,12 +77,55 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         for (int i = 0; i < data.waterColors.Count; i++)
         {
-            SpawnWater(data.waterColors[i], i);
+            SpawnWater(palette.Get(data.waterColors[i]), i);
         }
     }
 
     public void OnPointerClick(PointerEventData eventData) => OnClicked?.Invoke(this);
-    public void AddWater(Color color) => SpawnWater(color, _waters.Count);
+    private void AddWater(Color color) => SpawnWater(color, _waters.Count);
+
+    public void Shake(Action onComplete = null)
+    {
+        transform.DOKill();
+        float snapY = _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y;
+        transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
+
+        float x = _restLocalPos.x;
+        const float d = 0.08f;
+        const float t = 0.04f;
+
+        DOTween.Sequence()
+            .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutQuad))
+            .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x + d * 0.6f, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x - d * 0.4f, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x, t).SetEase(Ease.InOutQuad))
+            .OnComplete(() => onComplete?.Invoke());
+    }
+
+    public void TrySetSolved()
+    {
+        if (IsSolved || !IsFull || _waters.Count == 0)
+        {
+            return;
+        }
+
+        var first = _waters[0].Color;
+        for (int i = 1; i < _waters.Count; i++)
+        {
+            if (_waters[i].Color != first)
+            {
+                return;
+            }
+        }
+
+        IsSolved = true;
+        tubeCollider.enabled = false;
+        tubeRenderer.color = solvedColor;
+        transform.DOKill();
+        transform.localPosition = _restLocalPos;
+        transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 5, 0.5f);
+    }
 
     public void SetSelected(bool selected)
     {
@@ -72,18 +141,18 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public void PourInto(TubeView target, Action onComplete)
     {
-        bool isLeft = transform.position.x < target.transform.position.x;
-        float signedOffsetX = isLeft ? -pourOffsetX : pourOffsetX;
-        float signedAngle = isLeft ? -pourAngle : pourAngle;
+        var isLeft = transform.position.x < target.transform.position.x;
+        var signedOffsetX = isLeft ? -pourOffsetX : pourOffsetX;
+        var signedAngle = isLeft ? -pourAngle : pourAngle;
 
-        float pourX = target.HeadWorldPos.x + signedOffsetX;
-        float pourY = target.HeadWorldPos.y - tubeHead.localPosition.y;
-        Vector3 pourWorldPos = new Vector3(pourX, pourY, 0f);
-        Vector3 restWorldPos = transform.parent != null
+        var pourX = target.HeadWorldPos.x + signedOffsetX;
+        var pourY = target.HeadWorldPos.y - tubeHead.localPosition.y;
+        var pourWorldPos = new Vector3(pourX, pourY, 0f);
+        var restWorldPos = transform.parent != null
             ? transform.parent.TransformPoint(_restLocalPos)
             : _restLocalPos;
 
-        Sequence seq = DOTween.Sequence();
+        var seq = DOTween.Sequence();
         seq.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
         seq.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
         seq.AppendCallback(() => TransferWater(target));
@@ -93,17 +162,25 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         seq.OnComplete(() => onComplete?.Invoke());
     }
 
-    
     private void TransferWater(TubeView target)
     {
         if (IsEmpty || target.IsFull)
         {
             return;
         }
-        
-        Color color = TopColor;
-        RemoveTopWater();
-        target.AddWater(color);
+
+        if (!target.IsEmpty && target.TopColor != TopColor)
+        {
+            return;
+        }
+
+        var color = TopColor;
+        var toMove = Mathf.Min(TopColorCount, target.AvailableSlots);
+        for (var i = 0; i < toMove; i++)
+        {
+            RemoveTopWater();
+            target.AddWater(color);
+        }
     }
 
     private void RemoveTopWater()
@@ -112,7 +189,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         {
             return;
         }
-        
+
         var top = _waters[_waters.Count - 1];
         _waters.RemoveAt(_waters.Count - 1);
         Destroy(top.gameObject);

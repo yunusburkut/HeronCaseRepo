@@ -15,20 +15,8 @@ MonoBehaviour:
   levelIndex: 0
   tubes:
   - capacity: 4
-    waterColors:
-    - {r: 0, g: 0.7815788, b: 1, a: 1}
-    - {r: 1, g: 0.6223973, b: 0, a: 1}
+    waterColors: 000000000100000000000000
   - capacity: 4
-    waterColors:
-    - {r: 0, g: 1, b: 0.011921406, a: 1}
-    - {r: 1, g: 0.8741453, b: 0, a: 1}
-    - {r: 1, g: 0, b: 0, a: 1}
-  - capacity: 5
-    waterColors:
-    - {r: 0, g: 1, b: 0.011921406, a: 1}
-    - {r: 0.18016839, g: 0, b: 1, a: 1}
-    - {r: 0, g: 0, b: 0, a: 1}
-    - {r: 0, g: 1, b: 0.97912884, a: 1}
-    - {r: 1, g: 0.3667643, b: 0, a: 1}
-  - capacity: 5
-    waterColors: []
+    waterColors: 010000000000000001000000
+  - capacity: 4
+    waterColors: 

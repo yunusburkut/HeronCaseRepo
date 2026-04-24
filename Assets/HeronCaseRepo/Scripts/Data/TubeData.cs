@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace HeronCaseRepo.Scripts.Data
 {
@@ -8,6 +7,6 @@ namespace HeronCaseRepo.Scripts.Data
     public class TubeData
     {
         public int capacity;
-        public List<Color> waterColors = new List<Color>();
+        public List<WaterColor> waterColors = new List<WaterColor>();
     }
 }
