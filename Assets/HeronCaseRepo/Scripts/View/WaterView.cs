@@ -15,6 +15,13 @@ public class WaterView : MonoBehaviour
 
     public void SetHidden(bool hidden)
     {
-        spriteRenderer.color = hidden ? hiddenColor : Color;
+        if (hidden)
+        {
+            spriteRenderer.color = hiddenColor;
+        }
+        else
+        {
+            spriteRenderer.color = Color;
+        }
     }
 }

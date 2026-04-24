@@ -10,6 +10,14 @@ namespace HeronCaseRepo.Scripts.Data
         public int levelIndex;
 
         [Header("Tubes")]
-        public List<TubeData> tubes = new List<TubeData>();
+        public int tubeCapacity = 4;
+        public int emptyTubeCount = 2;
+
+        [Header("Colors")]
+        public List<WaterColor> colors;
+
+        [Header("Randomization")]
+        [Tooltip("0 = her oyunda farkli, >0 = sabit duzen")]
+        public int seed;
     }
 }

@@ -24,6 +24,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float pourOffsetX = 0.8f;
     [SerializeField] private float pourAngle = 120f;
     [SerializeField] private float pourDuration = 0.25f;
+    [SerializeField] private float pourHeightOffset = 0.5f;
 
     private readonly List<WaterView> _waters = new List<WaterView>();
     private int _capacity;
@@ -35,15 +36,51 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private Action _pendingOnComplete;
     private TweenCallback _cachedTransferWater;
     private TweenCallback _cachedOnComplete;
+    private Sequence _pourSequence;
 
     public event Action<TubeView> OnClicked;
 
-    public bool IsFull => _waters.Count >= _capacity;
-    public bool IsEmpty => _waters.Count == 0;
+    public bool IsFull
+    {
+        get
+        {
+            return _waters.Count >= _capacity;
+        }
+    }
+
+    public bool IsEmpty
+    {
+        get
+        {
+            return _waters.Count == 0;
+        }
+    }
+
     public bool IsSolved { get; private set; }
-    public Color TopColor => _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
-    private int AvailableSlots => _capacity - _waters.Count;
-    private Vector3 HeadWorldPos => tubeHead.position;
+
+    public Color TopColor
+    {
+        get
+        {
+            return _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
+        }
+    }
+
+    private int AvailableSlots
+    {
+        get
+        {
+            return _capacity - _waters.Count;
+        }
+    }
+
+    private Vector3 HeadWorldPos
+    {
+        get
+        {
+            return tubeHead.position;
+        }
+    }
 
     private int TopColorCount
     {
@@ -64,7 +101,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
                 }
                 count++;
             }
-            
+
             return count;
         }
     }
@@ -74,7 +111,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _cachedTransferWater = DoTransferWater;
         _cachedOnComplete = InvokeOnComplete;
     }
-    
+
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
     {
         _waterPrefab = waterPrefab;
@@ -90,11 +127,34 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         }
         RevealTopWater();
     }
-    
-    private void DoTransferWater() => TransferWater(_pourTarget);
-    private void InvokeOnComplete() => _pendingOnComplete?.Invoke();
-    public void OnPointerClick(PointerEventData eventData) => OnClicked?.Invoke(this);
-    private void AddWater(Color color) => SpawnWater(color, _waters.Count);
+
+    private void DoTransferWater()
+    {
+        TransferWater(_pourTarget);
+    }
+
+    private void InvokeOnComplete()
+    {
+        _pendingOnComplete?.Invoke();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnClicked?.Invoke(this);
+    }
+
+    private void AddWater(Color color)
+    {
+        SpawnWater(color, _waters.Count);
+    }
+
+    public void AccelerateCurrentPour(float timeScale)
+    {
+        if (_pourSequence != null && _pourSequence.IsActive())
+        {
+            _pourSequence.timeScale = timeScale;
+        }
+    }
 
     public void Shake(Action onComplete = null)
     {
@@ -124,7 +184,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
             {
                 return false;
             }
-            
+
             var first = _waters[0].Color;
             for (var i = 1; i < _waters.Count; i++)
             {
@@ -133,7 +193,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
                     return false;
                 }
             }
-            
+
             return true;
         }
     }
@@ -147,7 +207,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -182,26 +242,26 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         var pourWorldPos = new Vector3(
             target.HeadWorldPos.x + signedOffsetX,
-            target.HeadWorldPos.y - tubeHead.localPosition.y,
+            target.HeadWorldPos.y - tubeHead.localPosition.y + pourHeightOffset,
             0f
         );
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
 
-        var seq = DOTween.Sequence();
-        seq.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
-        seq.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
-        seq.AppendCallback(_cachedTransferWater);
-        seq.AppendInterval(0.4f);
-        seq.Append(transform.DORotate(Vector3.zero, pourDuration).SetEase(Ease.InOutQuad));
-        seq.Append(transform.DOMove(restWorldPos, pourDuration).SetEase(Ease.OutBack));
-        seq.OnComplete(_cachedOnComplete);
+        _pourSequence = DOTween.Sequence();
+        _pourSequence.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
+        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
+        _pourSequence.AppendCallback(_cachedTransferWater);
+        _pourSequence.AppendInterval(0.4f);
+        _pourSequence.Append(transform.DORotate(Vector3.zero, pourDuration).SetEase(Ease.InOutQuad));
+        _pourSequence.Append(transform.DOMove(restWorldPos, pourDuration).SetEase(Ease.OutBack));
+        _pourSequence.OnComplete(_cachedOnComplete);
     }
-    
+
     private void TransferWater(TubeView target)
     {
         var color = TopColor;
         var toMove = Mathf.Min(TopColorCount, target.AvailableSlots);
-        
+
         for (var i = 0; i < toMove; i++)
         {
             RemoveTopWater();
@@ -229,12 +289,12 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         var water = Instantiate(_waterPrefab, waterContainer);
         water.Init(color);
-        
+
         if (isHidden)
         {
             water.SetHidden(true);
         }
-        
+
         water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight, 0f);
         water.name = $"Water_{slotIndex}";
         _waters.Add(water);

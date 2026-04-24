@@ -13,22 +13,7 @@ MonoBehaviour:
   m_Name: LevelData
   m_EditorClassIdentifier: Assembly-CSharp::HeronCaseRepo.Scripts.Data.LevelData
   levelIndex: 0
-  tubes:
-  - capacity: 4
-    waters:
-    - color: 0
-      modifier: 1
-    - color: 2
-      modifier: 0
-    - color: 0
-      modifier: 0
-    - color: 2
-      modifier: 0
-  - capacity: 4
-    waters:
-    - color: 0
-      modifier: 0
-    - color: 0
-      modifier: 0
-  - capacity: 4
-    waters: []
+  tubeCapacity: 4
+  emptyTubeCount: 2
+  colors: 000000000100000006000000
+  seed: 0
