@@ -15,6 +15,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private float tubeSpacing = 1.5f;
     [SerializeField] private Transform tubesContainer;
 
+    [Header("Controller")]
+    [SerializeField] private GameController gameController;
+
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
     private void Start()
@@ -35,6 +38,7 @@ public class LevelGenerator : MonoBehaviour
             var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
             tubeView.name = $"Tube_{i}";
             tubeView.Init(tubeData, waterPrefab);
+            tubeView.OnClicked += gameController.OnTubeClicked;
             _tubeViews.Add(tubeView);
         }
     }
