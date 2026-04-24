@@ -1,0 +1,41 @@
+using System.Collections.Generic;
+using HeronCaseRepo.Scripts.Data;
+using UnityEngine;
+
+public class LevelGenerator : MonoBehaviour
+{
+    [Header("Data")]
+    [SerializeField] private LevelData levelData;
+
+    [Header("Prefabs")]
+    [SerializeField] private TubeView tubePrefab;
+    [SerializeField] private WaterView waterPrefab;
+
+    [Header("Layout")]
+    [SerializeField] private float tubeSpacing = 1.5f;
+    [SerializeField] private Transform tubesContainer;
+
+    private readonly List<TubeView> _tubeViews = new List<TubeView>();
+
+    private void Start()
+    {
+        GenerateLevel(levelData);
+    }
+
+    private void GenerateLevel(LevelData data)
+    {
+        var count = data.tubes.Count;
+        var startX = -(count - 1) * tubeSpacing * 0.5f;
+
+        for (var i = 0; i < count; i++)
+        {
+            var tubeData = data.tubes[i];
+
+            var pos = new Vector3(startX + i * tubeSpacing, 0f, 0f);
+            var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
+            tubeView.name = $"Tube_{i}";
+            tubeView.Init(tubeData, waterPrefab);
+            _tubeViews.Add(tubeView);
+        }
+    }
+}
