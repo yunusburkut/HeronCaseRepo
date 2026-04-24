@@ -7,6 +7,6 @@ namespace HeronCaseRepo.Scripts.Data
     public class TubeData
     {
         public int capacity;
-        public List<WaterColor> waterColors = new List<WaterColor>();
+        public List<WaterEntry> waters = new List<WaterEntry>();
     }
 }

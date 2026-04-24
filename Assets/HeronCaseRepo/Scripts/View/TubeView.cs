@@ -83,10 +83,12 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         ResizeTube(_capacity);
         _restLocalPos = transform.localPosition;
 
-        for (var i = 0; i < data.waterColors.Count; i++)
+        for (var i = 0; i < data.waters.Count; i++)
         {
-            SpawnWater(palette.Get(data.waterColors[i]), i);
+            var entry = data.waters[i];
+            SpawnWater(palette.Get(entry.color), i, entry.modifier == WaterModifier.Hidden);
         }
+        RevealTopWater();
     }
     
     private void DoTransferWater() => TransferWater(_pourTarget);
@@ -212,12 +214,27 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var last = _waters.Count - 1;
         Destroy(_waters[last].gameObject);
         _waters.RemoveAt(last);
+        RevealTopWater();
     }
 
-    private void SpawnWater(Color color, int slotIndex)
+    private void RevealTopWater()
+    {
+        if (_waters.Count > 0)
+        {
+            _waters[_waters.Count - 1].SetHidden(false);
+        }
+    }
+
+    private void SpawnWater(Color color, int slotIndex, bool isHidden = false)
     {
         var water = Instantiate(_waterPrefab, waterContainer);
         water.Init(color);
+        
+        if (isHidden)
+        {
+            water.SetHidden(true);
+        }
+        
         water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight, 0f);
         water.name = $"Water_{slotIndex}";
         _waters.Add(water);

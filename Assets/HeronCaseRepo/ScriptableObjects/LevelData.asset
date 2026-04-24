@@ -15,8 +15,20 @@ MonoBehaviour:
   levelIndex: 0
   tubes:
   - capacity: 4
-    waterColors: 000000000100000000000000
+    waters:
+    - color: 0
+      modifier: 1
+    - color: 2
+      modifier: 0
+    - color: 0
+      modifier: 0
+    - color: 2
+      modifier: 0
   - capacity: 4
-    waterColors: 010000000000000001000000
+    waters:
+    - color: 0
+      modifier: 0
+    - color: 0
+      modifier: 0
   - capacity: 4
-    waterColors: 
+    waters: []
