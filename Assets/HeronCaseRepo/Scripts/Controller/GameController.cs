@@ -1,19 +1,38 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    
+    public GameObject OnLevelCompletedTest;
+    public event Action OnLevelCompleted;
+
     private TubeView _selectedTube;
     private List<TubeView> _allTubes;
+    private bool _isAnimating;
+
+    private TubeView _shakeTarget;
+    private TubeView _pourFrom;
+    private TubeView _pourTo;
+    private Action _onShakeComplete;
+    private Action _onPourComplete;
+
+    private void Awake()
+    {
+        _onShakeComplete = OnShakeComplete;
+        _onPourComplete = OnPourComplete;
+    }
 
     public void Initialize(List<TubeView> tubes)
     {
         _allTubes = new List<TubeView>(tubes);
+        OnLevelCompleted += OnLevelComplete;
     }
 
     public void OnTubeClicked(TubeView tube)
     {
-        if (tube.IsSolved)
+        if (_isAnimating)
         {
             return;
         }
@@ -37,28 +56,38 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        if (!CanPour(_selectedTube, tube))
+        if (!MoveValidator.CanPour(_selectedTube, tube))
         {
-            TubeView toShake = _selectedTube;
+            _shakeTarget = _selectedTube;
             _selectedTube = null;
-            toShake.Shake(() => toShake.SetSelected(false));
+            _isAnimating = true;
+            _shakeTarget.Shake(_onShakeComplete);
             return;
         }
 
-        TubeView from = _selectedTube;
+        _pourFrom = _selectedTube;
+        _pourTo = tube;
         _selectedTube = null;
-        from.SetSelected(false);
-        from.PourInto(tube, () => CheckAfterPour(from, tube));
+        _isAnimating = true;
+        _pourFrom.SetSelected(false);
+        _pourFrom.PourInto(_pourTo, _onPourComplete);
     }
 
-    private bool CanPour(TubeView from, TubeView to)
+    private void OnShakeComplete()
     {
-        if (from.IsEmpty || to.IsFull)
-        {
-            return false;
-        }
+        _isAnimating = false;
+        _shakeTarget.SetSelected(false);
+    }
 
-        return to.IsEmpty || to.TopColor == from.TopColor;
+    private void OnPourComplete()
+    {
+        _isAnimating = false;
+        CheckAfterPour(_pourFrom, _pourTo);
+    }
+
+    private void OnLevelComplete()
+    {
+        OnLevelCompletedTest.SetActive(true);
     }
 
     private void CheckAfterPour(TubeView from, TubeView to)
@@ -66,27 +95,9 @@ public class GameController : MonoBehaviour
         from.TrySetSolved();
         to.TrySetSolved();
 
-        if (IsLevelComplete())
+        if (MoveValidator.IsLevelComplete(_allTubes))
         {
-            OnLevelComplete();
+            OnLevelCompleted?.Invoke();
         }
-    }
-
-    private bool IsLevelComplete()
-    {
-        foreach (var tube in _allTubes)
-        {
-            if (!tube.IsEmpty && !tube.IsSolved)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void OnLevelComplete()
-    {
-        Debug.Log("Level Complete!");
     }
 }

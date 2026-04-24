@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HeronCaseRepo.Scripts.Data
@@ -15,17 +16,30 @@ namespace HeronCaseRepo.Scripts.Data
     {
         public WaterColorEntry[] entries;
 
+        private Dictionary<WaterColor, Color> _lookup;
+
+        private void OnEnable()
+        {
+            BuildLookup();
+        }
+
         public Color Get(WaterColor colorId)
         {
+            if (_lookup.TryGetValue(colorId, out var color))
+            {
+                return color;
+            }
+
+            return Color.magenta;
+        }
+
+        private void BuildLookup()
+        {
+            _lookup = new Dictionary<WaterColor, Color>(entries.Length);
             foreach (var entry in entries)
             {
-                if (entry.colorId == colorId)
-                {
-                    return entry.color;
-                }
+                _lookup[entry.colorId] = entry.color;
             }
-            
-            return Color.magenta;
         }
     }
 }

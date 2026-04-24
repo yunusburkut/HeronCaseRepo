@@ -11,9 +11,4 @@ public class WaterView : MonoBehaviour
         Color = color;
         spriteRenderer.color = color;
     }
-
-    private void Reset()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
 }

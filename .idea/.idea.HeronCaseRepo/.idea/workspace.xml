@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/LevelData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/LevelData.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/TubeData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/TubeData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterColorPalette.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterColorPalette.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
@@ -17,6 +15,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
   </component>
   <component name="EmbeddingIndexingInfo">
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
@@ -28,6 +29,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/LevelData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/TubeData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@d8a2716f3013/Runtime/TMP/TMP_PackageResourceImporter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/35/41a1bf77/Color.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="McpProjectServerCommands">
@@ -44,6 +46,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Attach to Unity Editor.Attach to Unity Editor.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -81,13 +84,15 @@
       <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false" ignored-value-for-modified-check="19488">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="19488" />
       <option name="projectPathOnTarget" />
       <option name="runtimes">
-        <list />
+        <list>
+          <MonoRuntime />
+        </list>
       </option>
       <option name="selectedOptions">
         <list />
@@ -105,7 +110,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1776991496711</updated>
-      <workItem from="1776991499361" duration="6057000" />
+      <workItem from="1776991499361" duration="9048000" />
     </task>
     <servers />
   </component>
