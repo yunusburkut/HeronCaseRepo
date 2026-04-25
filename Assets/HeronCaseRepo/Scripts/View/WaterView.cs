@@ -1,9 +1,14 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class WaterView : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Color hiddenColor;
+
+    private static readonly int RevealAmountId = Shader.PropertyToID("_RevealAmount");
+    private MaterialPropertyBlock _mpb;
+    private float _revealAmount = 1f;
 
     public Color Color { get; private set; }
 
@@ -28,5 +33,22 @@ public class WaterView : MonoBehaviour
     public void SetSortingOrder(int order)
     {
         spriteRenderer.sortingOrder = order;
+    }
+
+    public void SetReveal(float amount)
+    {
+        _revealAmount = amount;
+        if (_mpb == null)
+        {
+            _mpb = new MaterialPropertyBlock();
+        }
+        spriteRenderer.GetPropertyBlock(_mpb);
+        _mpb.SetFloat(RevealAmountId, _revealAmount);
+        spriteRenderer.SetPropertyBlock(_mpb);
+    }
+
+    public Tween AnimateRevealTo(float to, float duration)
+    {
+        return DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration);
     }
 }

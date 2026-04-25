@@ -17,6 +17,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [Header("Settings")]
     [SerializeField] private float waterSlotHeight = 0.5f;
     [SerializeField] private float waterYStackOffset = 0.25f;
+    [SerializeField] private float waterRevealDuration = 0.3f;
     [SerializeField] private int defaultCapacity = 3;
 
     [Header("Animation")]
@@ -146,7 +147,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private void AddWater(Color color)
     {
-        SpawnWater(color, _waters.Count);
+        SpawnWater(color, _waters.Count, animate: true);
     }
 
     public void AccelerateCurrentPour(float timeScale)
@@ -273,9 +274,10 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void RemoveTopWater()
     {
         var last = _waters.Count - 1;
-        Destroy(_waters[last].gameObject);
+        var water = _waters[last];
         _waters.RemoveAt(last);
         RevealTopWater();
+        water.AnimateRevealTo(0f, waterRevealDuration).OnComplete(() => Destroy(water.gameObject));
     }
 
     private void RevealTopWater()
@@ -286,7 +288,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void SpawnWater(Color color, int slotIndex, bool isHidden = false)
+    private void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false)
     {
         var water = Instantiate(_waterPrefab, waterContainer);
         water.Init(color);
@@ -294,6 +296,12 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         if (isHidden)
         {
             water.SetHidden(true);
+        }
+
+        if (animate)
+        {
+            water.SetReveal(0f);
+            water.AnimateRevealTo(1f, waterRevealDuration);
         }
 
         water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight - slotIndex * waterYStackOffset, 0f);
