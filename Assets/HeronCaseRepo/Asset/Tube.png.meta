@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 892619fecfc66754886761239ec5c7d8
+guid: dbd5a52900016a64291efd67706f598a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6501029713538306046
-    second: empty_bottle_transparent_0
+      213: -127744156057749641
+    second: Tube_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,14 +46,14 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 201, z: 0, w: 290}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteBorder: {x: 0, y: 753, z: 0, w: 892}
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: empty_bottle_transparent_0
+      name: Tube_0
       rect:
         serializedVersion: 2
-        x: 304
-        y: 0
-        width: 216
-        height: 512
+        x: 33
+        y: 33
+        width: 630
+        height: 1610
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 210, z: 0, w: 292}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: effc5bd941c483a50800000000000000
-      internalID: 6501029713538306046
+      spriteID: 777bb0ced592a3ef0800000000000000
+      internalID: -127744156057749641
       vertices: []
       indices: 
       edges: []
@@ -125,21 +125,17 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: bb280f011872bfd4f8e7f783daffbfbd
-    internalID: -541165064
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceOnImport
-        value: False
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      empty_bottle_transparent_0: 6501029713538306046
+      Tube_0: -127744156057749641
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
