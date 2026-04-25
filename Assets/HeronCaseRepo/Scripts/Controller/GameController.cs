@@ -55,7 +55,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        if (_activeTargets.ContainsKey(tube))
+        if (_activeTargets.TryGetValue(tube, out var target))
         {
             if (_pendingPours.ContainsKey(tube) || !MoveValidator.CanPour(_selectedTube, tube))
             {
@@ -68,7 +68,7 @@ public class GameController : MonoBehaviour
             _lockedTubes.Add(_selectedTube);
             _selectedTube.SetSelected(false);
             _selectedTube = null;
-            _activeTargets[tube].AccelerateCurrentPour(queuedPourSpeedMultiplier);
+            target.AccelerateCurrentPour(queuedPourSpeedMultiplier);
             return;
         }
 
@@ -104,15 +104,14 @@ public class GameController : MonoBehaviour
 
         CheckAfterPour(from, to);
 
-        if (_pendingPours.TryGetValue(to, out var pendingFrom))
+        if (!_pendingPours.Remove(to, out var pendingFrom)) return;
         {
-            _pendingPours.Remove(to);
             _lockedTubes.Remove(pendingFrom);
+        }
 
-            if (MoveValidator.CanPour(pendingFrom, to))
-            {
-                StartPour(pendingFrom, to);
-            }
+        if (MoveValidator.CanPour(pendingFrom, to))
+        {
+            StartPour(pendingFrom, to);
         }
     }
 
