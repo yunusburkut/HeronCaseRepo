@@ -24,4 +24,9 @@ public class WaterView : MonoBehaviour
             spriteRenderer.color = Color;
         }
     }
+
+    public void SetSortingOrder(int order)
+    {
+        spriteRenderer.sortingOrder = order;
+    }
 }

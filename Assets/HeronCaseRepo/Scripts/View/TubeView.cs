@@ -16,6 +16,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     [Header("Settings")]
     [SerializeField] private float waterSlotHeight = 0.5f;
+    [SerializeField] private float waterYStackOffset = 0.25f;
     [SerializeField] private int defaultCapacity = 3;
 
     [Header("Animation")]
@@ -295,7 +296,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
             water.SetHidden(true);
         }
 
-        water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight, 0f);
+        water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight - slotIndex * waterYStackOffset, 0f);
+        water.SetSortingOrder(slotIndex);
         water.name = $"Water_{slotIndex}";
         _waters.Add(water);
     }

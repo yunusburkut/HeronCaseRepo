@@ -122,7 +122,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 30
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: dbd5a52900016a64291efd67706f598a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -152,6 +152,7 @@ MonoBehaviour:
   tubeCollider: {fileID: 6305860227426178007}
   waterRect: {fileID: 7230341967060609584}
   waterSlotHeight: 1
+  waterYStackOffset: 0.25
   defaultCapacity: 3
   liftAmount: 2
   liftDuration: 0.1
@@ -237,6 +238,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2.3650022}
-  m_SizeDelta: {x: 100, y: 94.770004}
+  m_AnchoredPosition: {x: 0, y: -2.275}
+  m_SizeDelta: {x: 100, y: 94.950005}
   m_Pivot: {x: 0.5, y: 0.5}
