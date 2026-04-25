@@ -153,12 +153,12 @@ MonoBehaviour:
   waterRect: {fileID: 7230341967060609584}
   waterSlotHeight: 1
   defaultCapacity: 3
-  selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  liftAmount: 0.3
-  liftDuration: 0.2
-  pourOffsetX: 0.8
+  liftAmount: 2
+  liftDuration: 0.1
+  pourOffsetX: 2.5
   pourAngle: 120
   pourDuration: 0.25
+  pourHeightOffset: 5
 --- !u!61 &6305860227426178007
 BoxCollider2D:
   m_ObjectHideFlags: 0
