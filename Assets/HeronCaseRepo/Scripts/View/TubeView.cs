@@ -13,6 +13,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private SpriteRenderer tubeRenderer;
     [SerializeField] private BoxCollider2D tubeCollider;
     [SerializeField] private RectTransform waterRect;
+    [SerializeField] private SpriteRenderer lineRenderer;
 
     [Header("Settings")]
     [SerializeField] private float waterSlotHeight = 0.5f;
@@ -112,6 +113,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _cachedTransferWater = DoTransferWater;
         _cachedOnComplete = InvokeOnComplete;
+        lineRenderer.color = Color.clear;
     }
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
@@ -238,6 +240,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _pourTarget = target;
         _pendingOnComplete = onComplete;
 
+        var pourColor = TopColor;
         var isLeft = transform.position.x < target.transform.position.x;
         var signedOffsetX = isLeft ? -pourOffsetX : pourOffsetX;
         var signedAngle = isLeft ? -pourAngle : pourAngle;
@@ -253,10 +256,24 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _pourSequence.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
         _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
         _pourSequence.AppendCallback(_cachedTransferWater);
+        _pourSequence.AppendCallback(() => _pourTarget.ShowLine(pourColor));
         _pourSequence.AppendInterval(0.4f);
+        _pourSequence.AppendCallback(_pourTarget.HideLine);
         _pourSequence.Append(transform.DORotate(Vector3.zero, pourDuration).SetEase(Ease.InOutQuad));
         _pourSequence.Append(transform.DOMove(restWorldPos, pourDuration).SetEase(Ease.OutBack));
         _pourSequence.OnComplete(_cachedOnComplete);
+    }
+
+    public void ShowLine(Color color)
+    {
+        lineRenderer.DOKill();
+        lineRenderer.color = new Color(color.r, color.g, color.b, 1f);
+    }
+
+    public void HideLine()
+    {
+        lineRenderer.DOKill();
+        lineRenderer.DOFade(0f, pourDuration);
     }
 
     private void TransferWater(TubeView target)
@@ -324,5 +341,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         waterContainer.localPosition -= new Vector3(0f, extraHeight * 0.5f, 0f);
 
         transform.localPosition -= new Vector3(0f, extraHeight * 0.5f, 0f);
+
+        var lt = lineRenderer.transform;
+        lt.localScale = new Vector3(lt.localScale.x, tubeRenderer.size.y, lt.localScale.z);
     }
 }
