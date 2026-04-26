@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afe3dc1feef85f4b899b19566cc32b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameController
-  OnLevelCompletedTest: {fileID: 813060312}
+  settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
 --- !u!4 &586733707
 Transform:
   m_ObjectHideFlags: 0
