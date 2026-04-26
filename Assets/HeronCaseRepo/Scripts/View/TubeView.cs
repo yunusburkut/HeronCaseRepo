@@ -10,6 +10,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Transform waterContainer;
     [SerializeField] private Transform tubeHead;
     [SerializeField] private SpriteRenderer tubeRenderer;
+    [SerializeField] private SpriteRenderer outlineRenderer;
     [SerializeField] private BoxCollider2D tubeCollider;
     [SerializeField] private RectTransform waterRect;
     [SerializeField] private SpriteRenderer lineRenderer;
@@ -111,6 +112,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _cachedShowPourLine = ShowPourLineOnTarget;
         _cachedHideTargetLine = HideTargetLine;
         lineRenderer.color = Color.clear;
+        outlineRenderer.color = Color.clear;
     }
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
@@ -168,6 +170,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _isSelected = selected;
         transform.DOKill();
+        outlineRenderer.DOKill();
+        outlineRenderer.DOColor(selected ? settings.outlineColor : Color.clear, 0.1f);
 
         if (selected)
         {
@@ -388,5 +392,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         var lt = lineRenderer.transform;
         lt.localScale = new Vector3(lt.localScale.x, tubeRenderer.size.y, lt.localScale.z);
+
+        var t = settings.outlineThickness;
+        outlineRenderer.size = new Vector2(tubeRenderer.size.x + t * 2f, tubeRenderer.size.y + t * 2f);
     }
 }

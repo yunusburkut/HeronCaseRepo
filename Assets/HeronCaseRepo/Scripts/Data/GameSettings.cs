@@ -9,6 +9,8 @@ public class GameSettings : ScriptableObject
     public float waterRevealDuration = 0.3f;
 
     [Header("Tube Selection")]
+    public Color outlineColor = new Color(1f, 0.85f, 0.3f, 1f);
+    public float outlineThickness = 0.1f;
     public float liftAmount = 0.3f;
     public float liftDuration = 0.2f;
     public float anticipationDip = 0.15f;
