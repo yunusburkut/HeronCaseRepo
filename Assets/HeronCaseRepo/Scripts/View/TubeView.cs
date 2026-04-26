@@ -162,6 +162,28 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Anticipation: tube dips slightly before lifting (principle: Anticipation)
+    // Landing: OutBounce simulates weight settling (principle: Follow Through)
+    public void SetSelected(bool selected)
+    {
+        _isSelected = selected;
+        transform.DOKill();
+
+        if (selected)
+        {
+            DOTween.Sequence()
+                .SetTarget(transform)
+                .SetRecyclable(true)
+                .Append(transform.DOLocalMoveY(_restLocalPos.y - settings.anticipationDip, settings.anticipationDuration).SetEase(Ease.OutQuad))
+                .Append(transform.DOLocalMoveY(_restLocalPos.y + settings.liftAmount, settings.liftDuration).SetEase(Ease.OutBack));
+        }
+        else
+        {
+            transform.DOLocalMoveY(_restLocalPos.y, settings.liftDuration).SetEase(Ease.OutBounce);
+        }
+    }
+
+    // Shake uses OutExpo for snappy initial impact, decays with InOutSine (principle: Exaggeration, Slow In/Out)
     public void Shake(Action onComplete = null)
     {
         _shakeOnComplete = onComplete;
@@ -175,11 +197,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         DOTween.Sequence()
             .SetRecyclable(true)
-            .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutQuad))
-            .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutQuad))
-            .Append(transform.DOLocalMoveX(x + d * settings.shakeDecay1, t).SetEase(Ease.InOutQuad))
-            .Append(transform.DOLocalMoveX(x - d * settings.shakeDecay2, t).SetEase(Ease.InOutQuad))
-            .Append(transform.DOLocalMoveX(x, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutExpo))
+            .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMoveX(x + d * settings.shakeDecay1, t).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMoveX(x - d * settings.shakeDecay2, t).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMoveX(x, t).SetEase(Ease.OutSine))
             .OnComplete(_cachedInvokeShakeComplete);
     }
 
@@ -218,32 +240,27 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         return false;
     }
 
+    // Squash on impact then OutElastic bounce (principle: Squash & Stretch)
     public Tween MarkSolved()
     {
         IsSolved = true;
         tubeCollider.enabled = false;
         transform.DOKill();
         transform.localPosition = _restLocalPos;
-        return transform.DOPunchScale(
-            Vector3.one * settings.solvedPunchScale,
-            settings.solvedPunchDuration,
-            settings.solvedPunchVibrato,
-            settings.solvedPunchElasticity
-        );
+        transform.localScale = Vector3.one;
+
+        return DOTween.Sequence()
+            .SetRecyclable(true)
+            .Append(transform.DOScale(new Vector3(settings.solvedSquashX, settings.solvedSquashY, 1f), settings.solvedSquashDuration).SetEase(Ease.OutQuad))
+            .Append(transform.DOScale(Vector3.one, settings.solvedBounceDuration).SetEase(Ease.OutElastic));
     }
 
-    public void SetSelected(bool selected)
-    {
-        _isSelected = selected;
-        transform.DOKill();
-        transform.DOLocalMoveY(
-            _isSelected ? _restLocalPos.y + settings.liftAmount : _restLocalPos.y,
-            settings.liftDuration
-        ).SetEase(_isSelected ? Ease.OutBack : Ease.InOutSine);
-    }
-
+    // Arc movement to pour position (principle: Arc)
+    // Rotation overshoots pour angle via OutBack (principle: Follow Through)
+    // Return rotation also overshoots via OutBack (principle: Follow Through)
     public void PourInto(TubeView target, Action<TubeView, TubeView> onComplete)
     {
+        transform.DOKill();
         _pourTarget = target;
         _pourOnComplete = onComplete;
 
@@ -257,16 +274,22 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
             target.HeadWorldPos.y - tubeHead.localPosition.y + settings.pourHeightOffset,
             0f
         );
+        var arcPeak = new Vector3(
+            (transform.position.x + pourWorldPos.x) * 0.5f,
+            Mathf.Max(transform.position.y, pourWorldPos.y) + settings.pourArcHeight,
+            0f
+        );
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
 
         _pourSequence = DOTween.Sequence().SetRecyclable(true);
-        _pourSequence.Append(transform.DOMove(pourWorldPos, settings.pourDuration).SetEase(Ease.OutQuad));
-        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), settings.pourDuration).SetEase(Ease.OutQuad));
+        _pourSequence.Append(transform.DOMove(arcPeak, settings.pourDuration * 0.45f).SetEase(Ease.OutSine));
+        _pourSequence.Append(transform.DOMove(pourWorldPos, settings.pourDuration * 0.55f).SetEase(Ease.InSine));
+        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), settings.pourDuration).SetEase(Ease.OutBack));
         _pourSequence.AppendCallback(_cachedTransferWater);
         _pourSequence.AppendCallback(_cachedShowPourLine);
         _pourSequence.AppendInterval(settings.pourHoldDuration);
         _pourSequence.AppendCallback(_cachedHideTargetLine);
-        _pourSequence.Append(transform.DORotate(Vector3.zero, settings.pourDuration).SetEase(Ease.InOutQuad));
+        _pourSequence.Append(transform.DORotate(Vector3.zero, settings.pourDuration).SetEase(Ease.OutBack));
         _pourSequence.Append(transform.DOMove(restWorldPos, settings.pourDuration).SetEase(Ease.OutBack));
         _pourSequence.OnComplete(_cachedInvokePourComplete);
     }

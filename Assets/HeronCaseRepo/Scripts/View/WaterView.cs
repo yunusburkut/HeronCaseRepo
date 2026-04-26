@@ -56,8 +56,10 @@ public class WaterView : MonoBehaviour
         spriteRenderer.SetPropertyBlock(_mpb);
     }
 
+    // Appearing: OutCubic (fast in, soft settle). Disappearing: InCubic (slow start, fast exit)
     public Tween AnimateRevealTo(float to, float duration)
     {
-        return DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration);
+        var ease = to > _revealAmount ? Ease.OutCubic : Ease.InCubic;
+        return DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration).SetEase(ease);
     }
 }

@@ -17,17 +17,20 @@ MonoBehaviour:
   waterRevealDuration: 0.3
   liftAmount: 2
   liftDuration: 0.1
+  anticipationDip: 0.2
+  anticipationDuration: 0.06
   pourOffsetX: 2.5
   pourAngle: 120
   pourDuration: 0.25
   pourHeightOffset: 5
   pourHoldDuration: 0.4
+  pourArcHeight: 1.5
   shakeMagnitude: 0.08
   shakeDuration: 0.04
   shakeDecay1: 0.6
   shakeDecay2: 0.4
-  solvedPunchScale: 0.15
-  solvedPunchDuration: 0.4
-  solvedPunchVibrato: 5
-  solvedPunchElasticity: 0.5
+  solvedSquashX: 1.15
+  solvedSquashY: 0.85
+  solvedSquashDuration: 0.08
+  solvedBounceDuration: 0.5
   queuedPourSpeedMultiplier: 1.75

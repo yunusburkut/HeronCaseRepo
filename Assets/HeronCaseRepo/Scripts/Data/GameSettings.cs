@@ -11,6 +11,8 @@ public class GameSettings : ScriptableObject
     [Header("Tube Selection")]
     public float liftAmount = 0.3f;
     public float liftDuration = 0.2f;
+    public float anticipationDip = 0.15f;
+    public float anticipationDuration = 0.06f;
 
     [Header("Pour Animation")]
     public float pourOffsetX = 0.8f;
@@ -18,6 +20,7 @@ public class GameSettings : ScriptableObject
     public float pourDuration = 0.25f;
     public float pourHeightOffset = 0.5f;
     public float pourHoldDuration = 0.4f;
+    public float pourArcHeight = 0.8f;
 
     [Header("Shake Animation")]
     public float shakeMagnitude = 0.08f;
@@ -26,10 +29,10 @@ public class GameSettings : ScriptableObject
     public float shakeDecay2 = 0.4f;
 
     [Header("Solved Animation")]
-    public float solvedPunchScale = 0.15f;
-    public float solvedPunchDuration = 0.4f;
-    public int solvedPunchVibrato = 5;
-    public float solvedPunchElasticity = 0.5f;
+    public float solvedSquashX = 1.15f;
+    public float solvedSquashY = 0.85f;
+    public float solvedSquashDuration = 0.08f;
+    public float solvedBounceDuration = 0.5f;
 
     [Header("Game")]
     public float queuedPourSpeedMultiplier = 1.75f;
