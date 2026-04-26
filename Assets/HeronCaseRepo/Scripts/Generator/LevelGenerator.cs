@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using HeronCaseRepo.Scripts.Data;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
@@ -19,11 +18,25 @@ public class LevelGenerator : MonoBehaviour
     [Header("Controller")]
     [SerializeField] private GameController gameController;
 
+    private ILevelController _levelController;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
+
+    private void Awake()
+    {
+        _levelController = gameController;
+    }
 
     private void Start()
     {
         GenerateLevel(levelData);
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var tubeView in _tubeViews)
+        {
+            tubeView.OnClicked -= _levelController.OnTubeClicked;
+        }
     }
 
     private void GenerateLevel(LevelData data)
@@ -38,10 +51,10 @@ public class LevelGenerator : MonoBehaviour
             var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
             tubeView.name = $"Tube_{i}";
             tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
-            tubeView.OnClicked += gameController.OnTubeClicked;
+            tubeView.OnClicked += _levelController.OnTubeClicked;
             _tubeViews.Add(tubeView);
         }
 
-        gameController.Initialize(_tubeViews);
+        _levelController.Initialize(_tubeViews);
     }
 }

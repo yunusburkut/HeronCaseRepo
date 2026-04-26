@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using HeronCaseRepo.Scripts.Data;
 using Random = System.Random;
 
 public static class LevelDataBuilder
@@ -16,8 +15,12 @@ public static class LevelDataBuilder
     {
         var pool = new List<WaterEntry>(data.colors.Count * data.tubeCapacity);
         foreach (var color in data.colors)
+        {
             for (var i = 0; i < data.tubeCapacity; i++)
+            {
                 pool.Add(new WaterEntry { color = color, modifier = WaterModifier.None });
+            }
+        }
         return pool;
     }
 

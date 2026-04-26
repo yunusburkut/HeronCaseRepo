@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using HeronCaseRepo.Scripts.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,18 +15,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private SpriteRenderer lineRenderer;
 
     [Header("Settings")]
-    [SerializeField] private float waterSlotHeight = 0.5f;
-    [SerializeField] private float waterYStackOffset = 0.25f;
-    [SerializeField] private float waterRevealDuration = 0.3f;
+    [SerializeField] private GameSettings settings;
     [SerializeField] private int defaultCapacity = 3;
-
-    [Header("Animation")]
-    [SerializeField] private float liftAmount = 0.3f;
-    [SerializeField] private float liftDuration = 0.2f;
-    [SerializeField] private float pourOffsetX = 0.8f;
-    [SerializeField] private float pourAngle = 120f;
-    [SerializeField] private float pourDuration = 0.25f;
-    [SerializeField] private float pourHeightOffset = 0.5f;
 
     private readonly List<WaterView> _waters = new List<WaterView>();
     private int _capacity;
@@ -37,9 +26,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private TubeView _pourTarget;
     private Color _pourLineColor;
-    private Action _pendingOnComplete;
+    private Action<TubeView, TubeView> _pourOnComplete;
+    private Action _shakeOnComplete;
     private TweenCallback _cachedTransferWater;
-    private TweenCallback _cachedOnComplete;
+    private TweenCallback _cachedInvokePourComplete;
+    private TweenCallback _cachedInvokeShakeComplete;
     private TweenCallback _cachedShowPourLine;
     private TweenCallback _cachedHideTargetLine;
     private Sequence _pourSequence;
@@ -115,7 +106,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         _cachedTransferWater = DoTransferWater;
-        _cachedOnComplete = InvokeOnComplete;
+        _cachedInvokePourComplete = InvokePourComplete;
+        _cachedInvokeShakeComplete = InvokeShakeComplete;
         _cachedShowPourLine = ShowPourLineOnTarget;
         _cachedHideTargetLine = HideTargetLine;
         lineRenderer.color = Color.clear;
@@ -142,9 +134,14 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         TransferWater(_pourTarget);
     }
 
-    private void InvokeOnComplete()
+    private void InvokePourComplete()
     {
-        _pendingOnComplete?.Invoke();
+        _pourOnComplete.Invoke(this, _pourTarget);
+    }
+
+    private void InvokeShakeComplete()
+    {
+        _shakeOnComplete?.Invoke();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -167,23 +164,23 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public void Shake(Action onComplete = null)
     {
-        _pendingOnComplete = onComplete;
+        _shakeOnComplete = onComplete;
         transform.DOKill();
-        var snapY = _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y;
+        var snapY = _isSelected ? _restLocalPos.y + settings.liftAmount : _restLocalPos.y;
         transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
 
         var x = _restLocalPos.x;
-        float d = 0.08f;//todo check magic numbers
-        float t = 0.04f;
+        var d = settings.shakeMagnitude;
+        var t = settings.shakeDuration;
 
         DOTween.Sequence()
             .SetRecyclable(true)
             .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutQuad))
             .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutQuad))
-            .Append(transform.DOLocalMoveX(x + d * 0.6f, t).SetEase(Ease.InOutQuad))
-            .Append(transform.DOLocalMoveX(x - d * 0.4f, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x + d * settings.shakeDecay1, t).SetEase(Ease.InOutQuad))
+            .Append(transform.DOLocalMoveX(x - d * settings.shakeDecay2, t).SetEase(Ease.InOutQuad))
             .Append(transform.DOLocalMoveX(x, t).SetEase(Ease.InOutQuad))
-            .OnComplete(_cachedOnComplete);
+            .OnComplete(_cachedInvokeShakeComplete);
     }
 
     public bool IsSingleColor
@@ -227,59 +224,63 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         tubeCollider.enabled = false;
         transform.DOKill();
         transform.localPosition = _restLocalPos;
-        return transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 5, 0.5f);
+        return transform.DOPunchScale(
+            Vector3.one * settings.solvedPunchScale,
+            settings.solvedPunchDuration,
+            settings.solvedPunchVibrato,
+            settings.solvedPunchElasticity
+        );
     }
 
     public void SetSelected(bool selected)
     {
         _isSelected = selected;
-        //todo add outline hover
         transform.DOKill();
         transform.DOLocalMoveY(
-            _isSelected ? _restLocalPos.y + liftAmount : _restLocalPos.y,
-            liftDuration
+            _isSelected ? _restLocalPos.y + settings.liftAmount : _restLocalPos.y,
+            settings.liftDuration
         ).SetEase(_isSelected ? Ease.OutBack : Ease.InOutSine);
     }
 
-    public void PourInto(TubeView target, Action onComplete)
+    public void PourInto(TubeView target, Action<TubeView, TubeView> onComplete)
     {
         _pourTarget = target;
-        _pendingOnComplete = onComplete;
+        _pourOnComplete = onComplete;
 
         _pourLineColor = TopColor;
         var isLeft = transform.position.x < target.transform.position.x;
-        var signedOffsetX = isLeft ? -pourOffsetX : pourOffsetX;
-        var signedAngle = isLeft ? -pourAngle : pourAngle;
+        var signedOffsetX = isLeft ? -settings.pourOffsetX : settings.pourOffsetX;
+        var signedAngle = isLeft ? -settings.pourAngle : settings.pourAngle;
 
         var pourWorldPos = new Vector3(
             target.HeadWorldPos.x + signedOffsetX,
-            target.HeadWorldPos.y - tubeHead.localPosition.y + pourHeightOffset,
+            target.HeadWorldPos.y - tubeHead.localPosition.y + settings.pourHeightOffset,
             0f
         );
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
 
         _pourSequence = DOTween.Sequence().SetRecyclable(true);
-        _pourSequence.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
-        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
+        _pourSequence.Append(transform.DOMove(pourWorldPos, settings.pourDuration).SetEase(Ease.OutQuad));
+        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), settings.pourDuration).SetEase(Ease.OutQuad));
         _pourSequence.AppendCallback(_cachedTransferWater);
         _pourSequence.AppendCallback(_cachedShowPourLine);
-        _pourSequence.AppendInterval(0.4f);
+        _pourSequence.AppendInterval(settings.pourHoldDuration);
         _pourSequence.AppendCallback(_cachedHideTargetLine);
-        _pourSequence.Append(transform.DORotate(Vector3.zero, pourDuration).SetEase(Ease.InOutQuad));
-        _pourSequence.Append(transform.DOMove(restWorldPos, pourDuration).SetEase(Ease.OutBack));
-        _pourSequence.OnComplete(_cachedOnComplete);
+        _pourSequence.Append(transform.DORotate(Vector3.zero, settings.pourDuration).SetEase(Ease.InOutQuad));
+        _pourSequence.Append(transform.DOMove(restWorldPos, settings.pourDuration).SetEase(Ease.OutBack));
+        _pourSequence.OnComplete(_cachedInvokePourComplete);
     }
 
-    private void ShowLine(Color color)
+    public void ShowLine(Color color)
     {
         lineRenderer.DOKill();
         lineRenderer.color = new Color(color.r, color.g, color.b, 1f);
     }
 
-    private void HideLine()
+    public void HideLine()
     {
         lineRenderer.DOKill();
-        lineRenderer.DOFade(0f, pourDuration);
+        lineRenderer.DOFade(0f, settings.pourDuration);
     }
 
     private void ShowPourLineOnTarget()
@@ -300,7 +301,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         for (var i = 0; i < toMove; i++)
         {
             RemoveTopWater();
-            target.AddWater(color, i * waterRevealDuration);
+            target.AddWater(color, i * settings.waterRevealDuration);
         }
     }
 
@@ -310,7 +311,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var water = _waters[last];
         _waters.RemoveAt(last);
         RevealTopWater();
-        water.AnimateRevealTo(0f, waterRevealDuration).OnComplete(water.CachedDestroySelf);
+        water.AnimateRevealTo(0f, settings.waterRevealDuration).OnComplete(water.CachedDestroySelf);
     }
 
     private void RevealTopWater()
@@ -334,10 +335,14 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         if (animate)
         {
             water.SetReveal(0f);
-            water.AnimateRevealTo(1f, waterRevealDuration).SetDelay(animDelay);
+            water.AnimateRevealTo(1f, settings.waterRevealDuration).SetDelay(animDelay);
         }
 
-        water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight - slotIndex * waterYStackOffset, 0f);
+        water.transform.localPosition = new Vector3(
+            0f,
+            (slotIndex + 0.5f) * settings.waterSlotHeight - slotIndex * settings.waterYStackOffset,
+            0f
+        );
         water.SetSortingOrder(slotIndex);
         water.name = $"Water_{slotIndex}";
         _waters.Add(water);
@@ -345,7 +350,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private void ResizeTube(int capacity)
     {
-        var extraHeight = (capacity - defaultCapacity) * waterSlotHeight;
+        var extraHeight = (capacity - defaultCapacity) * settings.waterSlotHeight;
 
         var size = tubeRenderer.size;
         tubeRenderer.size = new Vector2(size.x, size.y + extraHeight);

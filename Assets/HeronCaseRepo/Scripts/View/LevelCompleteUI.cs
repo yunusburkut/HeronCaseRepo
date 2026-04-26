@@ -5,14 +5,21 @@ public class LevelCompleteUI : MonoBehaviour
     [SerializeField] private GameController gameController;
     [SerializeField] private GameObject panel;
 
+    private ILevelController _levelController;
+
+    private void Awake()
+    {
+        _levelController = gameController;
+    }
+
     private void OnEnable()
     {
-        gameController.OnLevelCompleted += Show;
+        _levelController.OnLevelCompleted += Show;
     }
 
     private void OnDisable()
     {
-        gameController.OnLevelCompleted -= Show;
+        _levelController.OnLevelCompleted -= Show;
     }
 
     private void Show()

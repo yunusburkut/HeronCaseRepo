@@ -153,16 +153,8 @@ MonoBehaviour:
   tubeCollider: {fileID: 6305860227426178007}
   waterRect: {fileID: 7230341967060609584}
   lineRenderer: {fileID: 3661563078680745577}
-  waterSlotHeight: 1
-  waterYStackOffset: 0.25
-  waterRevealDuration: 0.3
+  settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
   defaultCapacity: 3
-  liftAmount: 2
-  liftDuration: 0.1
-  pourOffsetX: 2.5
-  pourAngle: 120
-  pourDuration: 0.25
-  pourHeightOffset: 5
 --- !u!61 &6305860227426178007
 BoxCollider2D:
   m_ObjectHideFlags: 0

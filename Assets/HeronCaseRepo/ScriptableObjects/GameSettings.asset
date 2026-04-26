@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b65610114644ed248b7108839b2465e7, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: Assembly-CSharp::GameSettings
+  waterSlotHeight: 1
+  waterYStackOffset: 0.25
+  waterRevealDuration: 0.3
+  liftAmount: 2
+  liftDuration: 0.1
+  pourOffsetX: 2.5
+  pourAngle: 120
+  pourDuration: 0.25
+  pourHeightOffset: 5
+  pourHoldDuration: 0.4
+  shakeMagnitude: 0.08
+  shakeDuration: 0.04
+  shakeDecay1: 0.6
+  shakeDecay2: 0.4
+  solvedPunchScale: 0.15
+  solvedPunchDuration: 0.4
+  solvedPunchVibrato: 5
+  solvedPunchElasticity: 0.5
+  queuedPourSpeedMultiplier: 1.75

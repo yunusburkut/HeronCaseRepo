@@ -1,8 +1,5 @@
-namespace HeronCaseRepo.Scripts.Data
+public enum WaterModifier
 {
-    public enum WaterModifier
-    {
-        None,
-        Hidden
-    }
+    None,
+    Hidden
 }

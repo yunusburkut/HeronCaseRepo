@@ -16,10 +16,14 @@ public class WaterView : MonoBehaviour
 
     private void Awake()
     {
+        _mpb = new MaterialPropertyBlock();
         CachedDestroySelf = DestroySelf;
     }
 
-    private void DestroySelf() => Destroy(gameObject);
+    private void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 
     public void Init(Color color)
     {
@@ -47,10 +51,6 @@ public class WaterView : MonoBehaviour
     public void SetReveal(float amount)
     {
         _revealAmount = amount;
-        if (_mpb == null)
-        {
-            _mpb = new MaterialPropertyBlock();
-        }
         spriteRenderer.GetPropertyBlock(_mpb);
         _mpb.SetFloat(RevealAmountId, _revealAmount);
         spriteRenderer.SetPropertyBlock(_mpb);

@@ -1,4 +1,3 @@
-using HeronCaseRepo.Scripts.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,26 +7,48 @@ public class LevelDataEditor : Editor
     private bool[] _tubeFoldouts = new bool[0];
 
     private static readonly Color HiddenColor = new Color(0.25f, 0.25f, 0.25f);
+    private static GUIStyle _topLabelStyle;
 
     private static WaterColorPalette _palette;
+    private static bool _paletteSearched;
 
     private static WaterColorPalette Palette
     {
         get
         {
-            if (_palette != null) return _palette;
+            if (_palette != null)
+            {
+                return _palette;
+            }
+            if (_paletteSearched)
+            {
+                return null;
+            }
+            _paletteSearched = true;
             var guids = AssetDatabase.FindAssets("t:WaterColorPalette");
             if (guids.Length > 0)
+            {
                 _palette = AssetDatabase.LoadAssetAtPath<WaterColorPalette>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            }
+            else
+            {
+                Debug.LogWarning("[LevelDataEditor] No WaterColorPalette asset found in project. Water swatches will not show colors.");
+            }
             return _palette;
         }
     }
 
     private static Color GetSwatchColor(WaterEntry entry)
     {
-        if (entry.modifier != WaterModifier.None) return HiddenColor;
+        if (entry.modifier != WaterModifier.None)
+        {
+            return HiddenColor;
+        }
         var palette = Palette;
-        if (palette != null) return palette.Get(entry.color);
+        if (palette != null)
+        {
+            return palette.Get(entry.color);
+        }
         return Color.grey;
     }
 
@@ -46,7 +67,10 @@ public class LevelDataEditor : Editor
             Undo.RecordObject(levelData, "Generate Random Level");
             levelData.tubes = LevelDataBuilder.Build(levelData);
             _tubeFoldouts = new bool[levelData.tubes.Count];
-            for (var i = 0; i < _tubeFoldouts.Length; i++) _tubeFoldouts[i] = true;
+            for (var i = 0; i < _tubeFoldouts.Length; i++)
+            {
+                _tubeFoldouts[i] = true;
+            }
             EditorUtility.SetDirty(levelData);
         }
         if (levelData.tubes.Count > 0 && GUILayout.Button("Clear", GUILayout.Height(28), GUILayout.Width(60)))
@@ -57,7 +81,10 @@ public class LevelDataEditor : Editor
         }
         EditorGUILayout.EndHorizontal();
 
-        if (levelData.tubes.Count == 0) return;
+        if (levelData.tubes.Count == 0)
+        {
+            return;
+        }
 
         EditorGUILayout.Space(6);
         EditorGUILayout.LabelField("Generated Tubes", EditorStyles.boldLabel);
@@ -67,7 +94,9 @@ public class LevelDataEditor : Editor
             var prev = _tubeFoldouts;
             _tubeFoldouts = new bool[levelData.tubes.Count];
             for (var i = 0; i < Mathf.Min(prev.Length, _tubeFoldouts.Length); i++)
+            {
                 _tubeFoldouts[i] = prev[i];
+            }
         }
 
         for (var i = 0; i < levelData.tubes.Count; i++)
@@ -78,7 +107,10 @@ public class LevelDataEditor : Editor
                 : $"Tube {i}  ({tube.waters.Count} waters)";
 
             _tubeFoldouts[i] = EditorGUILayout.Foldout(_tubeFoldouts[i], label, true);
-            if (!_tubeFoldouts[i]) continue;
+            if (!_tubeFoldouts[i])
+            {
+                continue;
+            }
 
             EditorGUI.indentLevel++;
 
@@ -98,8 +130,11 @@ public class LevelDataEditor : Editor
 
                 if (isTop)
                 {
-                    var s = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = new Color(0.5f, 0.8f, 0.5f) } };
-                    GUILayout.Label("top (always visible)", s);
+                    if (_topLabelStyle == null)
+                    {
+                        _topLabelStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = new Color(0.5f, 0.8f, 0.5f) } };
+                    }
+                    GUILayout.Label("top (always visible)", _topLabelStyle);
                 }
                 else
                 {
