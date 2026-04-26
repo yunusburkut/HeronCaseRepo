@@ -145,9 +145,9 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         OnClicked?.Invoke(this);
     }
 
-    private void AddWater(Color color)
+    private void AddWater(Color color, float delay = 0f)
     {
-        SpawnWater(color, _waters.Count, animate: true);
+        SpawnWater(color, _waters.Count, animate: true, animDelay: delay);
     }
 
     public void AccelerateCurrentPour(float timeScale)
@@ -267,7 +267,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         for (var i = 0; i < toMove; i++)
         {
             RemoveTopWater();
-            target.AddWater(color);
+            target.AddWater(color, i * waterRevealDuration);
         }
     }
 
@@ -288,7 +288,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false)
+    private void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false, float animDelay = 0f)
     {
         var water = Instantiate(_waterPrefab, waterContainer);
         water.Init(color);
@@ -301,7 +301,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         if (animate)
         {
             water.SetReveal(0f);
-            water.AnimateRevealTo(1f, waterRevealDuration);
+            water.AnimateRevealTo(1f, waterRevealDuration).SetDelay(animDelay);
         }
 
         water.transform.localPosition = new Vector3(0f, (slotIndex + 0.5f) * waterSlotHeight - slotIndex * waterYStackOffset, 0f);
