@@ -19,5 +19,8 @@ namespace HeronCaseRepo.Scripts.Data
         [Header("Randomization")]
         [Tooltip("0 = her oyunda farkli, >0 = sabit duzen")]
         public int seed;
+
+        [HideInInspector]
+        public List<TubeData> tubes = new List<TubeData>();
     }
 }

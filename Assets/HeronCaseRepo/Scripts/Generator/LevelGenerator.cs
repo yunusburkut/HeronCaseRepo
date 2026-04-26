@@ -30,7 +30,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateLevel(LevelData data)
     {
-        var tubeDataList = BuildTubeData(data);
+        var tubeDataList = data.tubes.Count > 0 ? data.tubes : BuildTubeData(data);
         var count = tubeDataList.Count;
         var startX = -(count - 1) * tubeSpacing * 0.5f;
 
@@ -47,7 +47,7 @@ public class LevelGenerator : MonoBehaviour
         gameController.Initialize(_tubeViews);
     }
 
-    private static List<TubeData> BuildTubeData(LevelData data)
+    public static List<TubeData> BuildTubeData(LevelData data)
     {
         var pool = new List<WaterEntry>(data.colors.Count * data.tubeCapacity);
         foreach (var color in data.colors)
