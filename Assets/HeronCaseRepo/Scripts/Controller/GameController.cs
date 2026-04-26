@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour, ILevelController
 
     public void Initialize(List<TubeView> tubes)
     {
+        _selectedTube = null;
+        _pendingShakeTarget = null;
         _allTubes = new List<TubeView>(tubes);
         _pourCoordinator = new PourCoordinator(settings.queuedPourSpeedMultiplier);
         _pourCoordinator.OnPourCompleted += CheckAfterPour;

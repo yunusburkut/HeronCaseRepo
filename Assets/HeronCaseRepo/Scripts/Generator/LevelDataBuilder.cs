@@ -4,10 +4,10 @@ using Random = System.Random;
 
 public static class LevelDataBuilder
 {
-    public static List<TubeData> Build(LevelData data)
+    public static List<TubeData> Build(LevelData data, int seedOverride = -1)
     {
         var pool = BuildPool(data);
-        Shuffle(pool, data.seed);
+        Shuffle(pool, seedOverride >= 0 ? seedOverride : data.seed);
         return DistributeIntoTubes(pool, data);
     }
 

@@ -28,20 +28,33 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
-        GenerateLevel(levelData);
+        _levelController.OnLevelCompleted += LoadNextLevel;
+        SpawnLevel(levelData.tubes.Count > 0 ? levelData.tubes : LevelDataBuilder.Build(levelData));
     }
 
     private void OnDestroy()
     {
+        _levelController.OnLevelCompleted -= LoadNextLevel;
         foreach (var tubeView in _tubeViews)
         {
             tubeView.OnClicked -= _levelController.OnTubeClicked;
         }
     }
 
-    private void GenerateLevel(LevelData data)
+    private void LoadNextLevel()
     {
-        var tubeDataList = data.tubes.Count > 0 ? data.tubes : LevelDataBuilder.Build(data);
+        foreach (var tubeView in _tubeViews)
+        {
+            tubeView.OnClicked -= _levelController.OnTubeClicked;
+            Destroy(tubeView.gameObject);
+        }
+        _tubeViews.Clear();
+
+        SpawnLevel(LevelDataBuilder.Build(levelData, 0));
+    }
+
+    private void SpawnLevel(List<TubeData> tubeDataList)
+    {
         var count = tubeDataList.Count;
         var startX = -(count - 1) * tubeSpacing * 0.5f;
 

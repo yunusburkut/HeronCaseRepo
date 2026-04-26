@@ -19,33 +19,43 @@ MonoBehaviour:
   tubes:
   - capacity: 4
     waters:
-    - color: 6
+    - color: 2
       modifier: 0
-    - color: 0
-      modifier: 1
-    - color: 1
+    - color: 3
       modifier: 0
-    - color: 0
+    - color: 3
       modifier: 0
-  - capacity: 4
-    waters:
-    - color: 1
-      modifier: 0
-    - color: 1
-      modifier: 0
-    - color: 6
-      modifier: 0
-    - color: 1
+    - color: 3
       modifier: 0
   - capacity: 4
     waters:
     - color: 0
       modifier: 0
-    - color: 6
+    - color: 2
+      modifier: 0
+    - color: 3
+      modifier: 0
+    - color: 1
+      modifier: 0
+  - capacity: 4
+    waters:
+    - color: 1
+      modifier: 0
+    - color: 2
       modifier: 0
     - color: 0
       modifier: 0
-    - color: 6
+    - color: 0
+      modifier: 0
+  - capacity: 4
+    waters:
+    - color: 2
+      modifier: 0
+    - color: 0
+      modifier: 0
+    - color: 1
+      modifier: 0
+    - color: 1
       modifier: 0
   - capacity: 4
     waters: []
