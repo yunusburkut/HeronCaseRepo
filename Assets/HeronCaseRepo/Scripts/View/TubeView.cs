@@ -36,9 +36,12 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private Vector3 _restLocalPos;
 
     private TubeView _pourTarget;
+    private Color _pourLineColor;
     private Action _pendingOnComplete;
     private TweenCallback _cachedTransferWater;
     private TweenCallback _cachedOnComplete;
+    private TweenCallback _cachedShowPourLine;
+    private TweenCallback _cachedHideTargetLine;
     private Sequence _pourSequence;
 
     public event Action<TubeView> OnClicked;
@@ -113,6 +116,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _cachedTransferWater = DoTransferWater;
         _cachedOnComplete = InvokeOnComplete;
+        _cachedShowPourLine = ShowPourLineOnTarget;
+        _cachedHideTargetLine = HideTargetLine;
         lineRenderer.color = Color.clear;
     }
 
@@ -172,6 +177,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         float t = 0.04f;
 
         DOTween.Sequence()
+            .SetRecyclable(true)
             .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutQuad))
             .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutQuad))
             .Append(transform.DOLocalMoveX(x + d * 0.6f, t).SetEase(Ease.InOutQuad))
@@ -240,7 +246,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _pourTarget = target;
         _pendingOnComplete = onComplete;
 
-        var pourColor = TopColor;
+        _pourLineColor = TopColor;
         var isLeft = transform.position.x < target.transform.position.x;
         var signedOffsetX = isLeft ? -pourOffsetX : pourOffsetX;
         var signedAngle = isLeft ? -pourAngle : pourAngle;
@@ -252,28 +258,38 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         );
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
 
-        _pourSequence = DOTween.Sequence();
+        _pourSequence = DOTween.Sequence().SetRecyclable(true);
         _pourSequence.Append(transform.DOMove(pourWorldPos, pourDuration).SetEase(Ease.OutQuad));
         _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), pourDuration).SetEase(Ease.OutQuad));
         _pourSequence.AppendCallback(_cachedTransferWater);
-        _pourSequence.AppendCallback(() => _pourTarget.ShowLine(pourColor));
+        _pourSequence.AppendCallback(_cachedShowPourLine);
         _pourSequence.AppendInterval(0.4f);
-        _pourSequence.AppendCallback(_pourTarget.HideLine);
+        _pourSequence.AppendCallback(_cachedHideTargetLine);
         _pourSequence.Append(transform.DORotate(Vector3.zero, pourDuration).SetEase(Ease.InOutQuad));
         _pourSequence.Append(transform.DOMove(restWorldPos, pourDuration).SetEase(Ease.OutBack));
         _pourSequence.OnComplete(_cachedOnComplete);
     }
 
-    public void ShowLine(Color color)
+    private void ShowLine(Color color)
     {
         lineRenderer.DOKill();
         lineRenderer.color = new Color(color.r, color.g, color.b, 1f);
     }
 
-    public void HideLine()
+    private void HideLine()
     {
         lineRenderer.DOKill();
         lineRenderer.DOFade(0f, pourDuration);
+    }
+
+    private void ShowPourLineOnTarget()
+    {
+        _pourTarget.ShowLine(_pourLineColor);
+    }
+
+    private void HideTargetLine()
+    {
+        _pourTarget.HideLine();
     }
 
     private void TransferWater(TubeView target)
@@ -294,7 +310,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var water = _waters[last];
         _waters.RemoveAt(last);
         RevealTopWater();
-        water.AnimateRevealTo(0f, waterRevealDuration).OnComplete(() => Destroy(water.gameObject));
+        water.AnimateRevealTo(0f, waterRevealDuration).OnComplete(water.CachedDestroySelf);
     }
 
     private void RevealTopWater()

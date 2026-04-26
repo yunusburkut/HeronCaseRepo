@@ -8,20 +8,26 @@ public class GameController : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float queuedPourSpeedMultiplier = 1.75f;
 
-    public GameObject OnLevelCompletedTest;
     public event Action OnLevelCompleted;
 
     private TubeView _selectedTube;
+    private TubeView _pendingShakeTarget;
     private List<TubeView> _allTubes;
 
     private readonly HashSet<TubeView> _lockedTubes = new HashSet<TubeView>();
     private readonly Dictionary<TubeView, TubeView> _activeTargets = new Dictionary<TubeView, TubeView>();
     private readonly Dictionary<TubeView, TubeView> _pendingPours = new Dictionary<TubeView, TubeView>();
 
+    private Action _cachedOnShakeComplete;
+
+    private void Awake()
+    {
+        _cachedOnShakeComplete = OnShakeComplete;
+    }
+
     public void Initialize(List<TubeView> tubes)
     {
         _allTubes = new List<TubeView>(tubes);
-        OnLevelCompleted += OnLevelComplete;
 
         foreach (var tube in _allTubes)
         {
@@ -74,14 +80,10 @@ public class GameController : MonoBehaviour
 
         if (!MoveValidator.CanPour(_selectedTube, tube))
         {
-            var shakeTarget = _selectedTube;
+            _pendingShakeTarget = _selectedTube;
             _selectedTube = null;
-            _lockedTubes.Add(shakeTarget);
-            shakeTarget.Shake(() =>
-            {
-                _lockedTubes.Remove(shakeTarget);
-                shakeTarget.SetSelected(false);
-            });
+            _lockedTubes.Add(_pendingShakeTarget);
+            _pendingShakeTarget.Shake(_cachedOnShakeComplete);
             return;
         }
 
@@ -115,9 +117,11 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void OnLevelComplete()
+    private void OnShakeComplete()
     {
-        OnLevelCompletedTest.SetActive(true);
+        _lockedTubes.Remove(_pendingShakeTarget);
+        _pendingShakeTarget.SetSelected(false);
+        _pendingShakeTarget = null;
     }
 
     private void CheckAfterPour(TubeView from, TubeView to)

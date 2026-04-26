@@ -10,7 +10,16 @@ public class WaterView : MonoBehaviour
     private MaterialPropertyBlock _mpb;
     private float _revealAmount = 1f;
 
+    public TweenCallback CachedDestroySelf { get; private set; }
+
     public Color Color { get; private set; }
+
+    private void Awake()
+    {
+        CachedDestroySelf = DestroySelf;
+    }
+
+    private void DestroySelf() => Destroy(gameObject);
 
     public void Init(Color color)
     {

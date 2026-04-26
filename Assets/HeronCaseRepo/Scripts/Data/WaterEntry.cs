@@ -3,7 +3,7 @@ using System;
 namespace HeronCaseRepo.Scripts.Data
 {
     [Serializable]
-    public class WaterEntry
+    public struct WaterEntry
     {
         public WaterColor color;
         public WaterModifier modifier;
