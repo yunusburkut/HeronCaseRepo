@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelController : MonoBehaviour
 {
     [Header("Data")]
     [SerializeField] private LevelData levelData;
@@ -15,42 +15,46 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private float tubeSpacing = 1.5f;
     [SerializeField] private Transform tubesContainer;
 
-    [Header("Controller")]
-    [SerializeField] private GameController gameController;
-
+    private GameStateMachine _stateMachine;
     private ILevelController _levelController;
+    private WinConditionChecker _winChecker;
+    private InputController _inputController;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
-    private void Awake()
+    public void Initialize(GameStateMachine stateMachine, ILevelController levelController,
+        WinConditionChecker winChecker, InputController inputController)
     {
-        _levelController = gameController;
+        _stateMachine = stateMachine;
+        _levelController = levelController;
+        _winChecker = winChecker;
+        _inputController = inputController;
+        _winChecker.OnLevelCompleted += OnLevelCompleted;
     }
 
-    private void Start()
+    public void StartLevel()
     {
-        _levelController.OnLevelCompleted += LoadNextLevel;
         SpawnLevel(levelData.tubes.Count > 0 ? levelData.tubes : LevelDataBuilder.Build(levelData));
+        _stateMachine.Enter(GameState.Playing);
     }
 
-    private void OnDestroy()
+    private void OnLevelCompleted()
     {
-        _levelController.OnLevelCompleted -= LoadNextLevel;
-        foreach (var tubeView in _tubeViews)
-        {
-            tubeView.OnClicked -= _levelController.OnTubeClicked;
-        }
+        _stateMachine.Enter(GameState.LevelComplete);
+        LoadNextLevel();
     }
 
     private void LoadNextLevel()
     {
+        _inputController.UnregisterTubes();
         foreach (var tubeView in _tubeViews)
         {
-            tubeView.OnClicked -= _levelController.OnTubeClicked;
             Destroy(tubeView.gameObject);
         }
+        
         _tubeViews.Clear();
 
         SpawnLevel(LevelDataBuilder.Build(levelData, 0));
+        _stateMachine.Enter(GameState.Playing);
     }
 
     private void SpawnLevel(List<TubeData> tubeDataList)
@@ -64,10 +68,20 @@ public class LevelGenerator : MonoBehaviour
             var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
             tubeView.name = $"Tube_{i}";
             tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
-            tubeView.OnClicked += _levelController.OnTubeClicked;
             _tubeViews.Add(tubeView);
         }
 
         _levelController.Initialize(_tubeViews);
+        _winChecker.Initialize(_tubeViews);
+        _inputController.RegisterTubes(_tubeViews);
+    }
+
+    private void OnDestroy()
+    {
+        if (_winChecker != null)
+        {
+            _winChecker.OnLevelCompleted -= OnLevelCompleted;
+        }
+        _inputController?.UnregisterTubes();
     }
 }

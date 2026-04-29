@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/LevelData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/LevelData.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/GameSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/GameSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/LevelData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/LevelData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/ILevelController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/ILevelController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/MoveValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/MoveValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/PourCoordinator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/PourCoordinator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterColorPalette.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterColorPalette.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/WaterEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelDataBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelDataBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/LevelCompleteUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/LevelCompleteUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,6 +70,9 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecapUselessUpdatesCounter">
+    <option name="suspendCountdown" value="9" />
+  </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Unity.exe" />

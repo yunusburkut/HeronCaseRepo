@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
 public class GameController : MonoBehaviour, ILevelController
@@ -8,49 +7,38 @@ public class GameController : MonoBehaviour, ILevelController
     [Header("Settings")]
     [SerializeField] private GameSettings settings;
 
-    public event Action OnLevelCompleted;
+    public event Action<TubeView, TubeView> OnPourCompleted;
 
     private TubeView _selectedTube;
     private TubeView _pendingShakeTarget;
-    private List<TubeView> _allTubes;
     private PourCoordinator _pourCoordinator;
 
     private Action _cachedOnShakeComplete;
-    private TweenCallback _cachedFireLevelCompleted;
+    private Action<TubeView, TubeView> _cachedForwardPour;
 
     private void Awake()
     {
         _cachedOnShakeComplete = OnShakeComplete;
-        _cachedFireLevelCompleted = FireLevelCompleted;
+        _cachedForwardPour = (from, to) => OnPourCompleted?.Invoke(from, to);
     }
 
     public void Initialize(List<TubeView> tubes)
     {
         _selectedTube = null;
         _pendingShakeTarget = null;
-        _allTubes = new List<TubeView>(tubes);
         _pourCoordinator = new PourCoordinator(settings.queuedPourSpeedMultiplier);
-        _pourCoordinator.OnPourCompleted += CheckAfterPour;
-
-        foreach (var tube in _allTubes)
-        {
-            TryMarkSolved(tube);
-        }
+        _pourCoordinator.OnPourCompleted += _cachedForwardPour;
     }
 
     public void OnTubeClicked(TubeView tube)
     {
         if (_pourCoordinator.IsLocked(tube))
-        {
             return;
-        }
 
         if (_selectedTube == null)
         {
             if (tube.IsEmpty || tube.IsSolved || _pourCoordinator.HasActivePour(tube))
-            {
                 return;
-            }
 
             _selectedTube = tube;
             tube.SetSelected(true);
@@ -92,55 +80,5 @@ public class GameController : MonoBehaviour, ILevelController
         _pourCoordinator.Unlock(_pendingShakeTarget);
         _pendingShakeTarget.SetSelected(false);
         _pendingShakeTarget = null;
-    }
-
-    private void FireLevelCompleted()
-    {
-        OnLevelCompleted?.Invoke();
-    }
-
-    private void CheckAfterPour(TubeView from, TubeView to)
-    {
-        var tweenTo = TryMarkSolved(to);
-        var tweenFrom = TryMarkSolved(from);
-        var tween = tweenTo ?? tweenFrom;
-
-        if (!MoveValidator.IsLevelComplete(_allTubes))
-        {
-            return;
-        }
-
-        if (tween != null)
-        {
-            tween.OnComplete(_cachedFireLevelCompleted);
-        }
-        else
-        {
-            OnLevelCompleted?.Invoke();
-        }
-    }
-
-    private Tween TryMarkSolved(TubeView tube)
-    {
-        if (tube.IsSolved || tube.IsEmpty || !tube.IsFull || !tube.IsSingleColor)
-        {
-            return null;
-        }
-
-        var color = tube.TopColor;
-        foreach (var t in _allTubes)
-        {
-            if (t == tube || t.IsEmpty)
-            {
-                continue;
-            }
-
-            if (t.HasColor(color))
-            {
-                return null;
-            }
-        }
-
-        return tube.MarkSolved();
     }
 }

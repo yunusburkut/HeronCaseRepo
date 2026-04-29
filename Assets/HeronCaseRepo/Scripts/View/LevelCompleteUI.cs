@@ -2,28 +2,29 @@ using UnityEngine;
 
 public class LevelCompleteUI : MonoBehaviour
 {
-    [SerializeField] private GameController gameController;
     [SerializeField] private GameObject panel;
 
-    private ILevelController _levelController;
+    private GameStateMachine _stateMachine;
 
-    private void Awake()
+    public void Initialize(GameStateMachine stateMachine)
     {
-        _levelController = gameController;
+        _stateMachine = stateMachine;
+        _stateMachine.OnStateChanged += OnStateChanged;
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        _levelController.OnLevelCompleted += Show;
+        if (_stateMachine != null)
+        {
+            _stateMachine.OnStateChanged -= OnStateChanged;
+        }
     }
 
-    private void OnDisable()
+    private void OnStateChanged(GameState state)
     {
-        _levelController.OnLevelCompleted -= Show;
-    }
-
-    private void Show()
-    {
-        panel.SetActive(true);
+        if (state == GameState.LevelComplete)
+        {
+            panel.SetActive(true);
+        }
     }
 }
