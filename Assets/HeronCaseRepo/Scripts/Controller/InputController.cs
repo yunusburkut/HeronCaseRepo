@@ -1,13 +1,14 @@
+using HeronCaseRepo.Scripts.Controller;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
-    private GameStateMachine _stateMachine;
+    private FlowController _flowController;
     private ILevelController _levelController;
 
-    public void Initialize(GameStateMachine stateMachine, ILevelController levelController)
+    public void Initialize(FlowController flowController, ILevelController levelController)
     {
-        _stateMachine = stateMachine;
+        _flowController = flowController;
         _levelController = levelController;
         EventBus<TubeClickedEvent>.Subscribe(OnTubeClicked);
     }
@@ -19,11 +20,11 @@ public class InputController : MonoBehaviour
 
     private void OnTubeClicked(TubeClickedEvent e)
     {
-        if (_stateMachine.Current != GameState.Playing)
+        if (_flowController.Current != FlowState.Gameplay)
         {
             return;
         }
-        
+
         _levelController.OnTubeClicked(e.Tube);
     }
 }

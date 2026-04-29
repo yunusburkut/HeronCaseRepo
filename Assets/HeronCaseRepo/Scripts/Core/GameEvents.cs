@@ -1,8 +1,3 @@
-public struct GameStateChangedEvent
-{
-    public GameState State;
-}
-
 public struct LevelCompletedEvent { }
 
 public struct PourAnimationCompletedEvent

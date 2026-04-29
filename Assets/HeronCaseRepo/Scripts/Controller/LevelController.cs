@@ -15,38 +15,30 @@ public class LevelController : MonoBehaviour
     [SerializeField] private float tubeSpacing = 1.5f;
     [SerializeField] private Transform tubesContainer;
 
-    private GameStateMachine _stateMachine;
     private ILevelController _levelController;
     private WinConditionChecker _winChecker;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
-    public void Initialize(GameStateMachine stateMachine, ILevelController levelController, WinConditionChecker winChecker)
+    public void Initialize(ILevelController levelController, WinConditionChecker winChecker)
     {
-        _stateMachine = stateMachine;
         _levelController = levelController;
         _winChecker = winChecker;
-        EventBus<LevelCompletedEvent>.Subscribe(OnLevelCompleted);
     }
 
     public void StartLevel()
     {
-        SpawnLevel(levelData.Tubes.Count > 0 ? levelData.Tubes : LevelDataBuilder.Build(levelData));
-        _stateMachine.Enter(GameState.Playing);
+        ClearLevel();
+        SpawnLevel(LevelDataBuilder.Build(levelData, 0));
     }
 
-    private void OnLevelCompleted(LevelCompletedEvent e)
-    {
-        _stateMachine.Enter(GameState.LevelComplete);
-    }
-
-    private void LoadNextLevel()
+    public void ClearLevel()
     {
         foreach (var tubeView in _tubeViews)
+        {
             Destroy(tubeView.gameObject);
+        }
+        
         _tubeViews.Clear();
-
-        SpawnLevel(LevelDataBuilder.Build(levelData, 0));
-        _stateMachine.Enter(GameState.Playing);
     }
 
     private void SpawnLevel(List<TubeData> tubeDataList)
@@ -64,11 +56,6 @@ public class LevelController : MonoBehaviour
         }
 
         _levelController.Initialize(_tubeViews);
-        _winChecker.Initialize(_tubeViews);
-    }
-
-    private void OnDestroy()
-    {
-        EventBus<LevelCompletedEvent>.Unsubscribe(OnLevelCompleted);
+        _winChecker.Initialize(_tubeViews);//todo change this 
     }
 }

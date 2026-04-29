@@ -1,3 +1,4 @@
+using HeronCaseRepo.Scripts.Controller;
 using UnityEngine;
 
 public class GameBootstrapper : MonoBehaviour
@@ -6,22 +7,17 @@ public class GameBootstrapper : MonoBehaviour
     [SerializeField] private GameController gameController;
     [SerializeField] private LevelController levelController;
     [SerializeField] private InputController inputController;
+    [SerializeField] private FlowController flowController;
 
-    private GameStateMachine _stateMachine;
     private WinConditionChecker _winChecker;
 
     private void Awake()
     {
-        _stateMachine = new GameStateMachine();
         _winChecker = new WinConditionChecker();
 
-        inputController.Initialize(_stateMachine, gameController);
-        levelController.Initialize(_stateMachine, gameController, _winChecker);
-    }
-
-    private void Start()
-    {
-        levelController.StartLevel();
+        levelController.Initialize(gameController, _winChecker);
+        flowController.Initialize(levelController);
+        inputController.Initialize(flowController, gameController);
     }
 
     private void OnDestroy()
