@@ -7,19 +7,17 @@ public class GameController : MonoBehaviour, ILevelController
     [Header("Settings")]
     [SerializeField] private GameSettings settings;
 
-    public event Action<TubeView, TubeView> OnPourCompleted;
-
     private TubeView _selectedTube;
     private TubeView _pendingShakeTarget;
     private PourCoordinator _pourCoordinator;
 
     private Action _cachedOnShakeComplete;
-    private Action<TubeView, TubeView> _cachedForwardPour;
+    private Action<TubeView, TubeView> _cachedPublishPour;
 
     private void Awake()
     {
         _cachedOnShakeComplete = OnShakeComplete;
-        _cachedForwardPour = (from, to) => OnPourCompleted?.Invoke(from, to);
+        _cachedPublishPour = (from, to) => EventBus<PourCompletedEvent>.Publish(new PourCompletedEvent { From = from, To = to });
     }
 
     public void Initialize(List<TubeView> tubes)
@@ -27,7 +25,7 @@ public class GameController : MonoBehaviour, ILevelController
         _selectedTube = null;
         _pendingShakeTarget = null;
         _pourCoordinator = new PourCoordinator(settings.QueuedPourSpeedMultiplier);
-        _pourCoordinator.OnPourCompleted += _cachedForwardPour;
+        _pourCoordinator.OnPourCompleted += _cachedPublishPour;
     }
 
     public void OnTubeClicked(TubeView tube)

@@ -18,17 +18,14 @@ public class LevelController : MonoBehaviour
     private GameStateMachine _stateMachine;
     private ILevelController _levelController;
     private WinConditionChecker _winChecker;
-    private InputController _inputController;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
-    public void Initialize(GameStateMachine stateMachine, ILevelController levelController,
-        WinConditionChecker winChecker, InputController inputController)
+    public void Initialize(GameStateMachine stateMachine, ILevelController levelController, WinConditionChecker winChecker)
     {
         _stateMachine = stateMachine;
         _levelController = levelController;
         _winChecker = winChecker;
-        _inputController = inputController;
-        _winChecker.OnLevelCompleted += OnLevelCompleted;
+        EventBus<LevelCompletedEvent>.Subscribe(OnLevelCompleted);
     }
 
     public void StartLevel()
@@ -37,7 +34,7 @@ public class LevelController : MonoBehaviour
         _stateMachine.Enter(GameState.Playing);
     }
 
-    private void OnLevelCompleted()
+    private void OnLevelCompleted(LevelCompletedEvent e)
     {
         _stateMachine.Enter(GameState.LevelComplete);
         LoadNextLevel();
@@ -45,12 +42,8 @@ public class LevelController : MonoBehaviour
 
     private void LoadNextLevel()
     {
-        _inputController.UnregisterTubes();
         foreach (var tubeView in _tubeViews)
-        {
             Destroy(tubeView.gameObject);
-        }
-        
         _tubeViews.Clear();
 
         SpawnLevel(LevelDataBuilder.Build(levelData, 0));
@@ -73,15 +66,10 @@ public class LevelController : MonoBehaviour
 
         _levelController.Initialize(_tubeViews);
         _winChecker.Initialize(_tubeViews);
-        _inputController.RegisterTubes(_tubeViews);
     }
 
     private void OnDestroy()
     {
-        if (_winChecker != null)
-        {
-            _winChecker.OnLevelCompleted -= OnLevelCompleted;
-        }
-        _inputController?.UnregisterTubes();
+        EventBus<LevelCompletedEvent>.Unsubscribe(OnLevelCompleted);
     }
 }

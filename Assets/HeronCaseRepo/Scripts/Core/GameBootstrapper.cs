@@ -6,7 +6,6 @@ public class GameBootstrapper : MonoBehaviour
     [SerializeField] private GameController gameController;
     [SerializeField] private LevelController levelController;
     [SerializeField] private InputController inputController;
-    [SerializeField] private LevelCompleteUI levelCompleteUI;
 
     private GameStateMachine _stateMachine;
     private WinConditionChecker _winChecker;
@@ -16,14 +15,17 @@ public class GameBootstrapper : MonoBehaviour
         _stateMachine = new GameStateMachine();
         _winChecker = new WinConditionChecker();
 
-        gameController.OnPourCompleted += _winChecker.OnPourCompleted;
         inputController.Initialize(_stateMachine, gameController);
-        levelController.Initialize(_stateMachine, gameController, _winChecker, inputController);
-        levelCompleteUI.Initialize(_stateMachine);
+        levelController.Initialize(_stateMachine, gameController, _winChecker);
     }
 
     private void Start()
     {
         levelController.StartLevel();
+    }
+
+    private void OnDestroy()
+    {
+        _winChecker.Dispose();
     }
 }

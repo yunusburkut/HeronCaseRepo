@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 
-public class WinConditionChecker
+public class WinConditionChecker : IDisposable
 {
     private readonly TweenCallback _cachedFireLevelCompleted;
     private List<TubeView> _allTubes;
 
-    public event Action OnLevelCompleted;
-
     public WinConditionChecker()
     {
         _cachedFireLevelCompleted = FireLevelCompleted;
+        EventBus<PourCompletedEvent>.Subscribe(HandlePourCompleted);
+    }
+
+    public void Dispose()
+    {
+        EventBus<PourCompletedEvent>.Unsubscribe(HandlePourCompleted);
     }
 
     public void Initialize(List<TubeView> tubes)
@@ -23,10 +27,10 @@ public class WinConditionChecker
         }
     }
 
-    public void OnPourCompleted(TubeView from, TubeView to)
+    private void HandlePourCompleted(PourCompletedEvent e)
     {
-        var tweenTo = TryMarkSolved(to);
-        var tweenFrom = TryMarkSolved(from);
+        var tweenTo = TryMarkSolved(e.To);
+        var tweenFrom = TryMarkSolved(e.From);
         var tween = tweenTo ?? tweenFrom;
 
         if (!MoveValidator.IsLevelComplete(_allTubes))
@@ -46,7 +50,7 @@ public class WinConditionChecker
 
     private void FireLevelCompleted()
     {
-        OnLevelCompleted?.Invoke();
+        EventBus<LevelCompletedEvent>.Publish(new LevelCompletedEvent());
     }
 
     private Tween TryMarkSolved(TubeView tube)

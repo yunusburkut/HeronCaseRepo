@@ -1,44 +1,29 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
     private GameStateMachine _stateMachine;
     private ILevelController _levelController;
-    private List<TubeView> _registeredTubes;
 
     public void Initialize(GameStateMachine stateMachine, ILevelController levelController)
     {
         _stateMachine = stateMachine;
         _levelController = levelController;
+        EventBus<TubeClickedEvent>.Subscribe(OnTubeClicked);
     }
 
-    public void RegisterTubes(List<TubeView> tubes)
+    private void OnDestroy()
     {
-        UnregisterTubes();
-        _registeredTubes = new List<TubeView>(tubes);
-        foreach (var tube in _registeredTubes)
+        EventBus<TubeClickedEvent>.Unsubscribe(OnTubeClicked);
+    }
+
+    private void OnTubeClicked(TubeClickedEvent e)
+    {
+        if (_stateMachine.Current != GameState.Playing)
         {
-            tube.OnClicked += HandleTubeClicked;
+            return;
         }
-    }
-
-    public void UnregisterTubes()
-    {
-        if (_registeredTubes == null) return;
         
-        foreach (var tube in _registeredTubes)
-        {
-            tube.OnClicked -= HandleTubeClicked;
-        }
-        _registeredTubes = null;
-    }
-
-    private void HandleTubeClicked(TubeView tube)
-    {
-        if (_stateMachine.Current != GameState.Playing) return;
-        {
-            _levelController.OnTubeClicked(tube);
-        }
+        _levelController.OnTubeClicked(e.Tube);
     }
 }

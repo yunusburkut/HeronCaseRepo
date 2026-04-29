@@ -4,25 +4,12 @@ public class LevelCompleteUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
 
-    private GameStateMachine _stateMachine;
+    private void OnEnable() => EventBus<GameStateChangedEvent>.Subscribe(OnStateChanged);
+    private void OnDisable() => EventBus<GameStateChangedEvent>.Unsubscribe(OnStateChanged);
 
-    public void Initialize(GameStateMachine stateMachine)
+    private void OnStateChanged(GameStateChangedEvent e)
     {
-        _stateMachine = stateMachine;
-        _stateMachine.OnStateChanged += OnStateChanged;
-    }
-
-    private void OnDestroy()
-    {
-        if (_stateMachine != null)
-        {
-            _stateMachine.OnStateChanged -= OnStateChanged;
-        }
-    }
-
-    private void OnStateChanged(GameState state)
-    {
-        if (state == GameState.LevelComplete)
+        if (e.State == GameState.LevelComplete)
         {
             panel.SetActive(true);
         }

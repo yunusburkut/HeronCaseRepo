@@ -36,8 +36,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private TweenCallback _cachedHideTargetLine;
     private Sequence _pourSequence;
 
-    public event Action<TubeView> OnClicked;
-
     public bool IsFull => _waters.Count >= _capacity;
     public bool IsEmpty => _waters.Count == 0;
     public bool IsSolved { get; private set; }
@@ -95,7 +93,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void InvokePourComplete() => _pourOnComplete.Invoke(this, _pourTarget);
     private void InvokeShakeComplete() => _shakeOnComplete?.Invoke();
 
-    public void OnPointerClick(PointerEventData eventData) => OnClicked?.Invoke(this);
+    public void OnPointerClick(PointerEventData eventData) => EventBus<TubeClickedEvent>.Publish(new TubeClickedEvent { Tube = this });
 
     private void AddWater(Color color, float delay = 0f)
     {
