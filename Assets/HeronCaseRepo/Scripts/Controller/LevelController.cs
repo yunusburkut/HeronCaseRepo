@@ -37,7 +37,6 @@ public class LevelController : MonoBehaviour
     private void OnLevelCompleted(LevelCompletedEvent e)
     {
         _stateMachine.Enter(GameState.LevelComplete);
-        LoadNextLevel();
     }
 
     private void LoadNextLevel()
