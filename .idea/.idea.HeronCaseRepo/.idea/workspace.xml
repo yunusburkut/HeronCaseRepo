@@ -6,14 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/InputController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/InputController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/WinConditionChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/WinConditionChecker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameStateMachine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameStateMachine.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/LevelCompleteUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/LevelCompleteUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,9 +26,11 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/LevelData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/TubeData.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Generator/LevelGenerator.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@d8a2716f3013/Runtime/TMP/TMP_PackageResourceImporter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@d8a2716f3013/Runtime/UGUI/EventSystem/EventData/PointerEventData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/569fd17d9cf9451992ce382bb65fa8d39dd600/a5/00266a74/Editor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/35/41a1bf77/Color.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/6e/ebbf859e/RuntimeInitializeOnLoadMethodAttribute.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -68,7 +64,7 @@
   }
 }</component>
   <component name="RecapUselessUpdatesCounter">
-    <option name="suspendCountdown" value="9" />
+    <option name="suspendCountdown" value="8" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">

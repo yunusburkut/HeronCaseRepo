@@ -9,21 +9,21 @@ public class WaterView : MonoBehaviour
     private static readonly int RevealAmountId = Shader.PropertyToID("_RevealAmount");
     private MaterialPropertyBlock _mpb;
     private float _revealAmount = 1f;
+    private TweenScope _scope;
 
     public TweenCallback CachedDestroySelf { get; private set; }
-
     public Color Color { get; private set; }
 
     private void Awake()
     {
+        _scope = new TweenScope();
         _mpb = new MaterialPropertyBlock();
         CachedDestroySelf = DestroySelf;
     }
 
-    private void DestroySelf()
-    {
-        Destroy(gameObject);
-    }
+    private void OnDestroy() => _scope.KillAll();
+
+    private void DestroySelf() => Destroy(gameObject);
 
     public void Init(Color color)
     {
@@ -33,14 +33,7 @@ public class WaterView : MonoBehaviour
 
     public void SetHidden(bool hidden)
     {
-        if (hidden)
-        {
-            spriteRenderer.color = hiddenColor;
-        }
-        else
-        {
-            spriteRenderer.color = Color;
-        }
+        spriteRenderer.color = hidden ? hiddenColor : Color;
     }
 
     public void SetSortingOrder(int order)
@@ -56,10 +49,9 @@ public class WaterView : MonoBehaviour
         spriteRenderer.SetPropertyBlock(_mpb);
     }
 
-    // Appearing: OutCubic (fast in, soft settle). Disappearing: InCubic (slow start, fast exit)
     public Tween AnimateRevealTo(float to, float duration)
     {
         var ease = to > _revealAmount ? Ease.OutCubic : Ease.InCubic;
-        return DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration).SetEase(ease);
+        return _scope.Add(DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration).SetEase(ease));
     }
 }
