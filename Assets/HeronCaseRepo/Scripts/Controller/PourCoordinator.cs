@@ -1,47 +1,37 @@
 using System;
 using System.Collections.Generic;
 
-public class PourCoordinator
+public class PourCoordinator : IDisposable
 {
     private readonly HashSet<TubeView> _lockedTubes = new HashSet<TubeView>();
     private readonly Dictionary<TubeView, TubeView> _activeTargets = new Dictionary<TubeView, TubeView>();
     private readonly Dictionary<TubeView, TubeView> _pendingPours = new Dictionary<TubeView, TubeView>();
     private readonly float _queuedSpeedMultiplier;
-    private readonly Action<TubeView, TubeView> _cachedOnPourComplete;
-
-    public event Action<TubeView, TubeView> OnPourCompleted;
 
     public PourCoordinator(float queuedSpeedMultiplier)
     {
         _queuedSpeedMultiplier = queuedSpeedMultiplier;
-        _cachedOnPourComplete = OnPourComplete;
+        EventBus<PourAnimationCompletedEvent>.Subscribe(OnPourAnimationCompleted);
     }
 
-    public bool IsLocked(TubeView tube)
+    public void Dispose()
     {
-        return _lockedTubes.Contains(tube);
+        EventBus<PourAnimationCompletedEvent>.Unsubscribe(OnPourAnimationCompleted);
     }
 
-    public bool HasActivePour(TubeView to)
-    {
-        return _activeTargets.ContainsKey(to);
-    }
+    public bool IsLocked(TubeView tube) => _lockedTubes.Contains(tube);
 
-    public void Lock(TubeView tube)
-    {
-        _lockedTubes.Add(tube);
-    }
+    public bool HasActivePour(TubeView to) => _activeTargets.ContainsKey(to);
 
-    public void Unlock(TubeView tube)
-    {
-        _lockedTubes.Remove(tube);
-    }
+    public void Lock(TubeView tube) => _lockedTubes.Add(tube);
+
+    public void Unlock(TubeView tube) => _lockedTubes.Remove(tube);
 
     public void StartPour(TubeView from, TubeView to)
     {
         _lockedTubes.Add(from);
         _activeTargets[to] = from;
-        from.PourInto(to, _cachedOnPourComplete);
+        from.PourInto(to);
     }
 
     public bool TryQueuePour(TubeView from, TubeView to)
@@ -59,23 +49,28 @@ public class PourCoordinator
         return true;
     }
 
-    private void OnPourComplete(TubeView from, TubeView to)
+    private void OnPourAnimationCompleted(PourAnimationCompletedEvent e)
     {
-        _lockedTubes.Remove(from);
-        _activeTargets.Remove(to);
+        if (!_activeTargets.ContainsKey(e.To))
+        {
+            return;
+        }
 
-        OnPourCompleted?.Invoke(from, to);
+        _lockedTubes.Remove(e.From);
+        _activeTargets.Remove(e.To);
 
-        if (!_pendingPours.Remove(to, out var pendingFrom))
+        EventBus<PourCompletedEvent>.Publish(new PourCompletedEvent { From = e.From, To = e.To });
+
+        if (!_pendingPours.Remove(e.To, out var pendingFrom))
         {
             return;
         }
 
         _lockedTubes.Remove(pendingFrom);
 
-        if (MoveValidator.CanPour(pendingFrom, to))
+        if (MoveValidator.CanPour(pendingFrom, e.To))
         {
-            StartPour(pendingFrom, to);
+            StartPour(pendingFrom, e.To);
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -27,8 +26,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private TubeView _pourTarget;
     private Color _pourLineColor;
-    private Action<TubeView, TubeView> _pourOnComplete;
-    private Action _shakeOnComplete;
     private TweenCallback _cachedTransferWater;
     private TweenCallback _cachedInvokePourComplete;
     private TweenCallback _cachedInvokeShakeComplete;
@@ -101,8 +98,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     }
 
     private void DoTransferWater() => TransferWater(_pourTarget);
-    private void InvokePourComplete() => _pourOnComplete.Invoke(this, _pourTarget);
-    private void InvokeShakeComplete() => _shakeOnComplete?.Invoke();
+    private void InvokePourComplete() => EventBus<PourAnimationCompletedEvent>.Publish(new PourAnimationCompletedEvent { From = this, To = _pourTarget });
+    private void InvokeShakeComplete() => EventBus<ShakeCompletedEvent>.Publish(new ShakeCompletedEvent { Tube = this });
 
     public void OnPointerClick(PointerEventData eventData) =>
         EventBus<TubeClickedEvent>.Publish(new TubeClickedEvent { Tube = this });
@@ -118,9 +115,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _anim.PlaySelect(selected);
     }
 
-    public void Shake(Action onComplete = null)
+    public void Shake()
     {
-        _shakeOnComplete = onComplete;
         var snapY = _isSelected ? _restLocalPos.y + settings.LiftAmount : _restLocalPos.y;
         transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
         _anim.PlayShake(_cachedInvokeShakeComplete);
@@ -159,10 +155,9 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         return _anim.PlayMarkSolved();
     }
 
-    public void PourInto(TubeView target, Action<TubeView, TubeView> onComplete)
+    public void PourInto(TubeView target)
     {
         _pourTarget = target;
-        _pourOnComplete = onComplete;
         _pourLineColor = TopColor;
 
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,39 +7,26 @@ public class GameController : MonoBehaviour, ILevelController
     [SerializeField] private GameSettings settings;
 
     private TubeView _selectedTube;
-    private TubeView _pendingShakeTarget;
     private PourCoordinator _pourCoordinator;
 
-    private Action _cachedOnShakeComplete;
-    private Action<TubeView, TubeView> _cachedPublishPour;
-
-    private void Awake()
-    {
-        _cachedOnShakeComplete = OnShakeComplete;
-        _cachedPublishPour = (from, to) => EventBus<PourCompletedEvent>.Publish(new PourCompletedEvent { From = from, To = to });
-    }
+    private void OnEnable() => EventBus<ShakeCompletedEvent>.Subscribe(OnShakeComplete);
+    private void OnDisable() => EventBus<ShakeCompletedEvent>.Unsubscribe(OnShakeComplete);
+    private void OnDestroy() => _pourCoordinator?.Dispose();
 
     public void Initialize(List<TubeView> tubes)
     {
         _selectedTube = null;
-        _pendingShakeTarget = null;
+        _pourCoordinator?.Dispose();
         _pourCoordinator = new PourCoordinator(settings.QueuedPourSpeedMultiplier);
-        _pourCoordinator.OnPourCompleted += _cachedPublishPour;
     }
 
     public void OnTubeClicked(TubeView tube)
     {
-        if (_pourCoordinator.IsLocked(tube))
-        {
-            return;
-        }
+        if (_pourCoordinator.IsLocked(tube)) return;
 
         if (_selectedTube == null)
         {
-            if (tube.IsEmpty || tube.IsSolved || _pourCoordinator.HasActivePour(tube))
-            {
-                return;
-            }
+            if (tube.IsEmpty || tube.IsSolved || _pourCoordinator.HasActivePour(tube)) return;
 
             _selectedTube = tube;
             tube.SetSelected(true);
@@ -64,10 +50,10 @@ public class GameController : MonoBehaviour, ILevelController
 
         if (!MoveValidator.CanPour(_selectedTube, tube))
         {
-            _pendingShakeTarget = _selectedTube;
+            var shakeTarget = _selectedTube;
             _selectedTube = null;
-            _pourCoordinator.Lock(_pendingShakeTarget);
-            _pendingShakeTarget.Shake(_cachedOnShakeComplete);
+            _pourCoordinator.Lock(shakeTarget);
+            shakeTarget.Shake();
             return;
         }
 
@@ -77,10 +63,9 @@ public class GameController : MonoBehaviour, ILevelController
         _pourCoordinator.StartPour(from, tube);
     }
 
-    private void OnShakeComplete()
+    private void OnShakeComplete(ShakeCompletedEvent e)
     {
-        _pourCoordinator.Unlock(_pendingShakeTarget);
-        _pendingShakeTarget.SetSelected(false);
-        _pendingShakeTarget = null;
+        _pourCoordinator.Unlock(e.Tube);
+        e.Tube.SetSelected(false);
     }
 }
