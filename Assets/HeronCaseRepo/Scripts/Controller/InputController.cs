@@ -1,12 +1,11 @@
-using HeronCaseRepo.Scripts.Controller;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
     private FlowController _flowController;
-    private ILevelController _levelController;
+    private ITubeInteractionController _levelController;
 
-    public void Initialize(FlowController flowController, ILevelController levelController)
+    public void Initialize(FlowController flowController, ITubeInteractionController levelController)
     {
         _flowController = flowController;
         _levelController = levelController;

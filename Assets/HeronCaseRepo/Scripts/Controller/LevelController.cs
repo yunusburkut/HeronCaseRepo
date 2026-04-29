@@ -15,11 +15,11 @@ public class LevelController : MonoBehaviour
     [SerializeField] private float tubeSpacing = 1.5f;
     [SerializeField] private Transform tubesContainer;
 
-    private ILevelController _levelController;
+    private ITubeInteractionController _levelController;
     private WinConditionChecker _winChecker;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
-    public void Initialize(ILevelController levelController, WinConditionChecker winChecker)
+    public void Initialize(ITubeInteractionController levelController, WinConditionChecker winChecker)
     {
         _levelController = levelController;
         _winChecker = winChecker;

@@ -12,34 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebc356bd50f842c198c33028dff5b176, type: 3}
   m_Name: LevelData
   m_EditorClassIdentifier: Assembly-CSharp::HeronCaseRepo.Scripts.Data.LevelData
-  tubeCapacity: 4
-  emptyTubeCount: 2
-  colors: 00000000010000000200000003000000
-  seed: 0
-  tubes:
-  - capacity: 4
-    waters:
-    - color: 1
-      modifier: 0
-    - color: 1
-      modifier: 0
-    - color: 0
-      modifier: 0
-    - color: 2
-      modifier: 0
-  - capacity: 4
+  _tubeCapacity: 6
+  _emptyTubeCount: 2
+  _colors: 00000000010000000200000003000000
+  _seed: 0
+  _tubes:
+  - capacity: 6
     waters:
     - color: 3
       modifier: 0
     - color: 1
       modifier: 0
-    - color: 3
-      modifier: 0
     - color: 1
-      modifier: 0
-  - capacity: 4
-    waters:
-    - color: 0
       modifier: 0
     - color: 2
       modifier: 0
@@ -47,17 +31,49 @@ MonoBehaviour:
       modifier: 0
     - color: 3
       modifier: 0
-  - capacity: 4
+  - capacity: 6
     waters:
+    - color: 2
+      modifier: 0
+    - color: 1
+      modifier: 0
+    - color: 3
+      modifier: 0
+    - color: 2
+      modifier: 0
+    - color: 2
+      modifier: 0
+    - color: 0
+      modifier: 0
+  - capacity: 6
+    waters:
+    - color: 0
+      modifier: 0
+    - color: 0
+      modifier: 0
+    - color: 3
+      modifier: 0
     - color: 2
       modifier: 0
     - color: 0
       modifier: 0
     - color: 3
       modifier: 0
+  - capacity: 6
+    waters:
     - color: 0
       modifier: 0
-  - capacity: 4
+    - color: 0
+      modifier: 0
+    - color: 3
+      modifier: 0
+    - color: 1
+      modifier: 0
+    - color: 1
+      modifier: 0
+    - color: 1
+      modifier: 0
+  - capacity: 6
     waters: []
-  - capacity: 4
+  - capacity: 6
     waters: []

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour, ILevelController
+public class GameController : MonoBehaviour, ITubeInteractionController
 {
     [Header("Settings")]
     [SerializeField] private GameSettings settings;

@@ -5,15 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/FlowController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/FlowController.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/FlowController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/FlowController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/GameController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/ILevelController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/ILevelController.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/InputController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/InputController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/MoveValidator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/MoveValidator.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/PourCoordinator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/PourCoordinator.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameEvents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameEvents.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameStateMachine.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameStateMachine.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,7 +77,7 @@
   }
 }]]></component>
   <component name="RecapUselessUpdatesCounter">
-    <option name="suspendCountdown" value="8" />
+    <option name="suspendCountdown" value="4" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
@@ -154,6 +158,19 @@
           <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
           <option name="timeStamp" value="7" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeWaterSlots.cs</url>
+          <line>65</line>
+          <properties documentPath="C:\GitRepo\HeronCaseRepo\Assets\HeronCaseRepo\Scripts\View\TubeWaterSlots.cs" containingFunctionPresentation="Method 'SpawnWater'">
+            <startOffsets>
+              <option value="1985" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1998" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

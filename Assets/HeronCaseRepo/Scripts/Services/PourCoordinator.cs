@@ -20,11 +20,8 @@ public class PourCoordinator : IDisposable
     }
 
     public bool IsLocked(TubeView tube) => _lockedTubes.Contains(tube);
-
     public bool HasActivePour(TubeView to) => _activeTargets.ContainsKey(to);
-
     public void Lock(TubeView tube) => _lockedTubes.Add(tube);
-
     public void Unlock(TubeView tube) => _lockedTubes.Remove(tube);
 
     public void StartPour(TubeView from, TubeView to)
@@ -34,19 +31,18 @@ public class PourCoordinator : IDisposable
         from.PourInto(to);
     }
 
-    public bool TryQueuePour(TubeView from, TubeView to)
+    public void TryQueuePour(TubeView from, TubeView to)
     {
         if (!_activeTargets.TryGetValue(to, out var activeFrom) ||
             _pendingPours.ContainsKey(to) ||
             !MoveValidator.CanPour(from, to))
         {
-            return false;
+            return;
         }
 
         _pendingPours[to] = from;
         _lockedTubes.Add(from);
         activeFrom.AccelerateCurrentPour(_queuedSpeedMultiplier);
-        return true;
     }
 
     private void OnPourAnimationCompleted(PourAnimationCompletedEvent e)

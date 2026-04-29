@@ -2,65 +2,62 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HeronCaseRepo.Scripts.Controller
+public enum FlowState { Menu, Gameplay, Win }
+
+public class FlowController : MonoBehaviour
 {
-    public enum FlowState { Menu, Gameplay, Win }
+    [SerializeField] private GameObject menu;
+    [SerializeField] private Button menuButton;
 
-    public class FlowController : MonoBehaviour
+    [SerializeField] private GameObject win;
+    [SerializeField] private Button winButton;
+
+    [SerializeField] private TextMeshProUGUI stateText;
+
+    private LevelController _levelController;
+
+    public FlowState Current { get; private set; }
+
+    public void Initialize(LevelController levelController)
     {
-        [SerializeField] private GameObject menu;
-        [SerializeField] private Button menuButton;
+        _levelController = levelController;
 
-        [SerializeField] private GameObject win;
-        [SerializeField] private Button winButton;
-        
-        [SerializeField] private TextMeshProUGUI stateText;
+        menuButton.onClick.AddListener(OnMenuButtonClicked);
+        winButton.onClick.AddListener(OnWinButtonClicked);
 
-        private LevelController _levelController;
+        EventBus<LevelCompletedEvent>.Subscribe(OnLevelCompleted);
 
-        public FlowState Current { get; private set; }
+        EnterState(FlowState.Menu);
+    }
 
-        public void Initialize(LevelController levelController)
-        {
-            _levelController = levelController;
+    private void OnDestroy()
+    {
+        EventBus<LevelCompletedEvent>.Unsubscribe(OnLevelCompleted);
+    }
 
-            menuButton.onClick.AddListener(OnMenuButtonClicked);
-            winButton.onClick.AddListener(OnWinButtonClicked);
+    private void OnMenuButtonClicked()
+    {
+        _levelController.StartLevel();
+        EnterState(FlowState.Gameplay);
+    }
 
-            EventBus<LevelCompletedEvent>.Subscribe(OnLevelCompleted);
+    private void OnWinButtonClicked()
+    {
+        _levelController.ClearLevel();
+        EnterState(FlowState.Menu);
+    }
 
-            EnterState(FlowState.Menu);
-        }
+    private void OnLevelCompleted(LevelCompletedEvent e)
+    {
+        EnterState(FlowState.Win);
+    }
 
-        private void OnDestroy()
-        {
-            EventBus<LevelCompletedEvent>.Unsubscribe(OnLevelCompleted);
-        }
+    private void EnterState(FlowState state)
+    {
+        Current = state;
+        menu.SetActive(state == FlowState.Menu);
+        win.SetActive(state == FlowState.Win);
 
-        private void OnMenuButtonClicked()
-        {
-            _levelController.StartLevel();
-            EnterState(FlowState.Gameplay);
-        }
-
-        private void OnWinButtonClicked()
-        {
-            _levelController.ClearLevel();
-            EnterState(FlowState.Menu);
-        }
-
-        private void OnLevelCompleted(LevelCompletedEvent e)
-        {
-            EnterState(FlowState.Win);
-        }
-
-        private void EnterState(FlowState state)
-        {
-            Current = state;
-            menu.SetActive(state == FlowState.Menu);
-            win.SetActive(state == FlowState.Win);
-
-            stateText.text = Current.ToString();
-        }
+        stateText.text = Current.ToString();
     }
 }

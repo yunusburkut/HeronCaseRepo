@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,10 +17,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameSettings settings;
     [SerializeField] private int defaultCapacity = 3;
 
-    private readonly List<WaterView> _waters = new List<WaterView>();
-    private int _capacity;
+    private TubeWaterSlots _waterSlots;
     private bool _isSelected;
-    private WaterView _waterPrefab;
     private Vector3 _restLocalPos;
 
     private TubeView _pourTarget;
@@ -35,31 +32,15 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private TweenScope _scope;
     private TubeAnimController _anim;
 
-    public bool IsFull => _waters.Count >= _capacity;
-    public bool IsEmpty => _waters.Count == 0;
+    public bool IsFull => _waterSlots.IsFull;
+    public bool IsEmpty => _waterSlots.IsEmpty;
     public bool IsSolved { get; private set; }
-
-    public Color TopColor => _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
+    public bool IsSingleColor => _waterSlots.IsSingleColor;
+    public Color TopColor => _waterSlots.TopColor;
     public Vector3 HeadWorldPos => tubeHead.position;
 
-    private int AvailableSlots => _capacity - _waters.Count;
-
-    private int TopColorCount
-    {
-        get
-        {
-            if (_waters.Count == 0) return 0;
-
-            var top = _waters[_waters.Count - 1].Color;
-            var count = 0;
-            for (int i = _waters.Count - 1; i >= 0; i--)
-            {
-                if (_waters[i].Color != top) break;
-                count++;
-            }
-            return count;
-        }
-    }
+    private int AvailableSlots => _waterSlots.AvailableSlots;
+    private int TopColorCount => _waterSlots.TopColorCount;
 
     private void Awake()
     {
@@ -76,25 +57,23 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         outlineRenderer.color = Color.clear;
     }
 
-    private void OnDisable() => _scope.KillAll();
     private void OnDestroy() => _scope.KillAll();
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
     {
-        _waterPrefab = waterPrefab;
-        _capacity = data.capacity;
+        _waterSlots = new TubeWaterSlots(waterContainer, waterPrefab, settings, data.capacity);
 
-        ResizeTube(_capacity);
+        ResizeTube(data.capacity);
         _restLocalPos = transform.localPosition;
         _anim.SetRestLocalPos(_restLocalPos);
 
         for (var i = 0; i < data.waters.Count; i++)
         {
             var entry = data.waters[i];
-            SpawnWater(palette.Get(entry.color), i, entry.modifier == WaterModifier.Hidden);
+            _waterSlots.SpawnWater(palette.Get(entry.color), i, entry.modifier == WaterModifier.Hidden);
         }
-        
-        RevealTopWater();
+
+        _waterSlots.RevealTopWater();
     }
 
     private void DoTransferWater() => TransferWater(_pourTarget);
@@ -103,9 +82,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData) =>
         EventBus<TubeClickedEvent>.Publish(new TubeClickedEvent { Tube = this });
-
-    private void AddWater(Color color, float delay = 0f) =>
-        SpawnWater(color, _waters.Count, animate: true, animDelay: delay);
 
     public void AccelerateCurrentPour(float timeScale) => _anim.AcceleratePour(timeScale);
 
@@ -122,31 +98,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _anim.PlayShake(_cachedInvokeShakeComplete);
     }
 
-    public bool IsSingleColor
-    {
-        get
-        {
-            if (_waters.Count == 0) return false;
-
-            var first = _waters[0].Color;
-            for (var i = 1; i < _waters.Count; i++)
-            {
-                if (_waters[i].Color != first) return false;
-            }
-            
-            return true;
-        }
-    }
-
-    public bool HasColor(Color color)
-    {
-        for (var i = 0; i < _waters.Count; i++)
-        {
-            if (_waters[i].Color == color) return true;
-        }
-        
-        return false;
-    }
+    public bool HasColor(Color color) => _waterSlots.HasColor(color);
 
     public Tween MarkSolved()
     {
@@ -174,56 +126,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         var color = TopColor;
         var toMove = Mathf.Min(TopColorCount, target.AvailableSlots);
-
         for (var i = 0; i < toMove; i++)
         {
-            RemoveTopWater();
-            target.AddWater(color, i * settings.WaterRevealDuration);
+            _waterSlots.RemoveTopWater();
+            target._waterSlots.AddWater(color, i * settings.WaterRevealDuration);
         }
-    }
-
-    private void RemoveTopWater()
-    {
-        var last = _waters.Count - 1;
-        var water = _waters[last];
-        _waters.RemoveAt(last);
-        RevealTopWater();
-        water.AnimateRevealTo(0f, settings.WaterRevealDuration).OnComplete(water.CachedDestroySelf);
-    }
-
-    private void RevealTopWater()
-    {
-        if (_waters.Count > 0)
-        {
-            _waters[_waters.Count - 1].SetHidden(false);
-        }
-    }
-
-    private void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false, float animDelay = 0f)
-    {
-        var water = Instantiate(_waterPrefab, waterContainer);
-        water.Init(color);
-
-        if (isHidden)
-        {
-            water.SetHidden(true);
-        }
-
-        if (animate)
-        {
-            water.SetReveal(0f);
-            water.AnimateRevealTo(1f, settings.WaterRevealDuration).SetDelay(animDelay);
-        }
-
-        water.transform.localPosition = new Vector3(
-            0f,
-            (slotIndex + 0.5f) * settings.WaterSlotHeight - slotIndex * settings.WaterYStackOffset,
-            0f
-        );
-        
-        water.SetSortingOrder(slotIndex);
-        water.name = $"Water_{slotIndex}";
-        _waters.Add(water);
     }
 
     private void ResizeTube(int capacity)

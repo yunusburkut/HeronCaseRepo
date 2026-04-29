@@ -5,9 +5,7 @@ public static class MoveValidator
     public static bool CanPour(TubeView from, TubeView to)
     {
         if (from.IsEmpty || to.IsFull)
-        {
             return false;
-        }
 
         return to.IsEmpty || to.TopColor == from.TopColor;
     }
