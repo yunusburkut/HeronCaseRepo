@@ -33,7 +33,7 @@ public class LevelController : MonoBehaviour
 
     public void StartLevel()
     {
-        SpawnLevel(levelData.tubes.Count > 0 ? levelData.tubes : LevelDataBuilder.Build(levelData));
+        SpawnLevel(levelData.Tubes.Count > 0 ? levelData.Tubes : LevelDataBuilder.Build(levelData));
         _stateMachine.Enter(GameState.Playing);
     }
 

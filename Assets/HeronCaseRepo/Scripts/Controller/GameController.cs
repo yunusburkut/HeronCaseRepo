@@ -26,19 +26,23 @@ public class GameController : MonoBehaviour, ILevelController
     {
         _selectedTube = null;
         _pendingShakeTarget = null;
-        _pourCoordinator = new PourCoordinator(settings.queuedPourSpeedMultiplier);
+        _pourCoordinator = new PourCoordinator(settings.QueuedPourSpeedMultiplier);
         _pourCoordinator.OnPourCompleted += _cachedForwardPour;
     }
 
     public void OnTubeClicked(TubeView tube)
     {
         if (_pourCoordinator.IsLocked(tube))
+        {
             return;
+        }
 
         if (_selectedTube == null)
         {
             if (tube.IsEmpty || tube.IsSolved || _pourCoordinator.HasActivePour(tube))
+            {
                 return;
+            }
 
             _selectedTube = tube;
             tube.SetSelected(true);

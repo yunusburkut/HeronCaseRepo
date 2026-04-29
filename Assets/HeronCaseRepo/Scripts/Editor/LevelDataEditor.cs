@@ -16,14 +16,8 @@ public class LevelDataEditor : Editor
     {
         get
         {
-            if (_palette != null)
-            {
-                return _palette;
-            }
-            if (_paletteSearched)
-            {
-                return null;
-            }
+            if (_palette != null) return _palette;
+            if (_paletteSearched) return null;
             _paletteSearched = true;
             var guids = AssetDatabase.FindAssets("t:WaterColorPalette");
             if (guids.Length > 0)
@@ -40,23 +34,16 @@ public class LevelDataEditor : Editor
 
     private static Color GetSwatchColor(WaterEntry entry)
     {
-        if (entry.modifier != WaterModifier.None)
-        {
-            return HiddenColor;
-        }
+        if (entry.modifier != WaterModifier.None) return HiddenColor;
         var palette = Palette;
-        if (palette != null)
-        {
-            return palette.Get(entry.color);
-        }
-        return Color.grey;
+        return palette != null ? palette.Get(entry.color) : Color.grey;
     }
 
     public override void OnInspectorGUI()
     {
         var levelData = (LevelData)target;
 
-        DrawPropertiesExcluding(serializedObject, "tubes");
+        DrawPropertiesExcluding(serializedObject, "_tubes");
         serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.Space(8);
@@ -65,52 +52,42 @@ public class LevelDataEditor : Editor
         if (GUILayout.Button("Generate Random", GUILayout.Height(28)))
         {
             Undo.RecordObject(levelData, "Generate Random Level");
-            levelData.tubes = LevelDataBuilder.Build(levelData);
-            _tubeFoldouts = new bool[levelData.tubes.Count];
+            levelData.SetTubes(LevelDataBuilder.Build(levelData));
+            _tubeFoldouts = new bool[levelData.Tubes.Count];
             for (var i = 0; i < _tubeFoldouts.Length; i++)
-            {
                 _tubeFoldouts[i] = true;
-            }
             EditorUtility.SetDirty(levelData);
         }
-        if (levelData.tubes.Count > 0 && GUILayout.Button("Clear", GUILayout.Height(28), GUILayout.Width(60)))
+        if (levelData.Tubes.Count > 0 && GUILayout.Button("Clear", GUILayout.Height(28), GUILayout.Width(60)))
         {
             Undo.RecordObject(levelData, "Clear Generated Level");
-            levelData.tubes.Clear();
+            levelData.Tubes.Clear();
             EditorUtility.SetDirty(levelData);
         }
         EditorGUILayout.EndHorizontal();
 
-        if (levelData.tubes.Count == 0)
-        {
-            return;
-        }
+        if (levelData.Tubes.Count == 0) return;
 
         EditorGUILayout.Space(6);
         EditorGUILayout.LabelField("Generated Tubes", EditorStyles.boldLabel);
 
-        if (_tubeFoldouts.Length != levelData.tubes.Count)
+        if (_tubeFoldouts.Length != levelData.Tubes.Count)
         {
             var prev = _tubeFoldouts;
-            _tubeFoldouts = new bool[levelData.tubes.Count];
+            _tubeFoldouts = new bool[levelData.Tubes.Count];
             for (var i = 0; i < Mathf.Min(prev.Length, _tubeFoldouts.Length); i++)
-            {
                 _tubeFoldouts[i] = prev[i];
-            }
         }
 
-        for (var i = 0; i < levelData.tubes.Count; i++)
+        for (var i = 0; i < levelData.Tubes.Count; i++)
         {
-            var tube = levelData.tubes[i];
+            var tube = levelData.Tubes[i];
             var label = tube.waters.Count == 0
                 ? $"Tube {i}  (empty)"
                 : $"Tube {i}  ({tube.waters.Count} waters)";
 
             _tubeFoldouts[i] = EditorGUILayout.Foldout(_tubeFoldouts[i], label, true);
-            if (!_tubeFoldouts[i])
-            {
-                continue;
-            }
+            if (!_tubeFoldouts[i]) continue;
 
             EditorGUI.indentLevel++;
 
@@ -131,9 +108,7 @@ public class LevelDataEditor : Editor
                 if (isTop)
                 {
                     if (_topLabelStyle == null)
-                    {
                         _topLabelStyle = new GUIStyle(EditorStyles.miniLabel) { normal = { textColor = new Color(0.5f, 0.8f, 0.5f) } };
-                    }
                     GUILayout.Label("top (always visible)", _topLabelStyle);
                 }
                 else

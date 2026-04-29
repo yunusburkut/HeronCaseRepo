@@ -1,41 +1,72 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GameSettings", menuName = "WaterSort/Game Settings")]
 public class GameSettings : ScriptableObject
 {
     [Header("Water Layout")]
-    public float waterSlotHeight = 0.5f;
-    public float waterYStackOffset = 0.25f;
-    public float waterRevealDuration = 0.3f;
+    [SerializeField, FormerlySerializedAs("waterSlotHeight")] private float _waterSlotHeight = 0.5f;
+    [SerializeField, FormerlySerializedAs("waterYStackOffset")] private float _waterYStackOffset = 0.25f;
+    [SerializeField, FormerlySerializedAs("waterRevealDuration")] private float _waterRevealDuration = 0.3f;
 
     [Header("Tube Selection")]
-    public Color outlineColor = new Color(1f, 0.85f, 0.3f, 1f);
-    public float outlineThickness = 0.1f;
-    public float liftAmount = 0.3f;
-    public float liftDuration = 0.2f;
-    public float anticipationDip = 0.15f;
-    public float anticipationDuration = 0.06f;
+    [SerializeField, FormerlySerializedAs("outlineColor")] private Color _outlineColor = new Color(1f, 0.85f, 0.3f, 1f);
+    [SerializeField, FormerlySerializedAs("outlineThickness")] private float _outlineThickness = 0.1f;
+    [SerializeField, FormerlySerializedAs("liftAmount")] private float _liftAmount = 0.3f;
+    [SerializeField, FormerlySerializedAs("liftDuration")] private float _liftDuration = 0.2f;
+    [SerializeField, FormerlySerializedAs("anticipationDip")] private float _anticipationDip = 0.15f;
+    [SerializeField, FormerlySerializedAs("anticipationDuration")] private float _anticipationDuration = 0.06f;
 
     [Header("Pour Animation")]
-    public float pourOffsetX = 0.8f;
-    public float pourAngle = 120f;
-    public float pourDuration = 0.25f;
-    public float pourHeightOffset = 0.5f;
-    public float pourHoldDuration = 0.4f;
-    public float pourArcHeight = 0.8f;
+    [SerializeField, FormerlySerializedAs("pourOffsetX")] private float _pourOffsetX = 0.8f;
+    [SerializeField, FormerlySerializedAs("pourAngle")] private float _pourAngle = 120f;
+    [SerializeField, FormerlySerializedAs("pourDuration")] private float _pourDuration = 0.25f;
+    [SerializeField, FormerlySerializedAs("pourHeightOffset")] private float _pourHeightOffset = 0.5f;
+    [SerializeField, FormerlySerializedAs("pourHoldDuration")] private float _pourHoldDuration = 0.4f;
+    [SerializeField, FormerlySerializedAs("pourArcHeight")] private float _pourArcHeight = 0.8f;
 
     [Header("Shake Animation")]
-    public float shakeMagnitude = 0.08f;
-    public float shakeDuration = 0.04f;
-    public float shakeDecay1 = 0.6f;
-    public float shakeDecay2 = 0.4f;
+    [SerializeField, FormerlySerializedAs("shakeMagnitude")] private float _shakeMagnitude = 0.08f;
+    [SerializeField, FormerlySerializedAs("shakeDuration")] private float _shakeDuration = 0.04f;
+    [SerializeField, FormerlySerializedAs("shakeDecay1")] private float _shakeDecay1 = 0.6f;
+    [SerializeField, FormerlySerializedAs("shakeDecay2")] private float _shakeDecay2 = 0.4f;
 
     [Header("Solved Animation")]
-    public float solvedSquashX = 1.15f;
-    public float solvedSquashY = 0.85f;
-    public float solvedSquashDuration = 0.08f;
-    public float solvedBounceDuration = 0.5f;
+    [SerializeField, FormerlySerializedAs("solvedSquashX")] private float _solvedSquashX = 1.15f;
+    [SerializeField, FormerlySerializedAs("solvedSquashY")] private float _solvedSquashY = 0.85f;
+    [SerializeField, FormerlySerializedAs("solvedSquashDuration")] private float _solvedSquashDuration = 0.08f;
+    [SerializeField, FormerlySerializedAs("solvedBounceDuration")] private float _solvedBounceDuration = 0.5f;
 
     [Header("Game")]
-    public float queuedPourSpeedMultiplier = 1.75f;
+    [SerializeField, FormerlySerializedAs("queuedPourSpeedMultiplier")] private float _queuedPourSpeedMultiplier = 1.75f;
+
+    public float WaterSlotHeight => _waterSlotHeight;
+    public float WaterYStackOffset => _waterYStackOffset;
+    public float WaterRevealDuration => _waterRevealDuration;
+
+    public Color OutlineColor => _outlineColor;
+    public float OutlineThickness => _outlineThickness;
+    public float LiftAmount => _liftAmount;
+    public float LiftDuration => _liftDuration;
+    public float AnticipationDip => _anticipationDip;
+    public float AnticipationDuration => _anticipationDuration;
+
+    public float PourOffsetX => _pourOffsetX;
+    public float PourAngle => _pourAngle;
+    public float PourDuration => _pourDuration;
+    public float PourHeightOffset => _pourHeightOffset;
+    public float PourHoldDuration => _pourHoldDuration;
+    public float PourArcHeight => _pourArcHeight;
+
+    public float ShakeMagnitude => _shakeMagnitude;
+    public float ShakeDuration => _shakeDuration;
+    public float ShakeDecay1 => _shakeDecay1;
+    public float ShakeDecay2 => _shakeDecay2;
+
+    public float SolvedSquashX => _solvedSquashX;
+    public float SolvedSquashY => _solvedSquashY;
+    public float SolvedSquashDuration => _solvedSquashDuration;
+    public float SolvedBounceDuration => _solvedBounceDuration;
+
+    public float QueuedPourSpeedMultiplier => _queuedPourSpeedMultiplier;
 }

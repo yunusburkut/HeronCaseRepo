@@ -38,68 +38,28 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public event Action<TubeView> OnClicked;
 
-    public bool IsFull
-    {
-        get
-        {
-            return _waters.Count >= _capacity;
-        }
-    }
-
-    public bool IsEmpty
-    {
-        get
-        {
-            return _waters.Count == 0;
-        }
-    }
-
+    public bool IsFull => _waters.Count >= _capacity;
+    public bool IsEmpty => _waters.Count == 0;
     public bool IsSolved { get; private set; }
 
-    public Color TopColor
-    {
-        get
-        {
-            return _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
-        }
-    }
+    public Color TopColor => _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
 
-    private int AvailableSlots
-    {
-        get
-        {
-            return _capacity - _waters.Count;
-        }
-    }
-
-    private Vector3 HeadWorldPos
-    {
-        get
-        {
-            return tubeHead.position;
-        }
-    }
+    private int AvailableSlots => _capacity - _waters.Count;
+    private Vector3 HeadWorldPos => tubeHead.position;
 
     private int TopColorCount
     {
         get
         {
-            if (_waters.Count == 0)
-            {
-                return 0;
-            }
+            if (_waters.Count == 0) return 0;
 
             var top = _waters[_waters.Count - 1].Color;
             var count = 0;
             for (int i = _waters.Count - 1; i >= 0; i--)
             {
-                if (_waters[i].Color != top)
-                {
-                    break;
-                }
+                if (_waters[i].Color != top) break;
                 count++;
             }
-
             return count;
         }
     }
@@ -131,25 +91,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         RevealTopWater();
     }
 
-    private void DoTransferWater()
-    {
-        TransferWater(_pourTarget);
-    }
+    private void DoTransferWater() => TransferWater(_pourTarget);
+    private void InvokePourComplete() => _pourOnComplete.Invoke(this, _pourTarget);
+    private void InvokeShakeComplete() => _shakeOnComplete?.Invoke();
 
-    private void InvokePourComplete()
-    {
-        _pourOnComplete.Invoke(this, _pourTarget);
-    }
-
-    private void InvokeShakeComplete()
-    {
-        _shakeOnComplete?.Invoke();
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        OnClicked?.Invoke(this);
-    }
+    public void OnPointerClick(PointerEventData eventData) => OnClicked?.Invoke(this);
 
     private void AddWater(Color color, float delay = 0f)
     {
@@ -159,9 +105,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     public void AccelerateCurrentPour(float timeScale)
     {
         if (_pourSequence != null && _pourSequence.IsActive())
-        {
             _pourSequence.timeScale = timeScale;
-        }
     }
 
     // Anticipation: tube dips slightly before lifting (principle: Anticipation)
@@ -171,19 +115,19 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _isSelected = selected;
         transform.DOKill();
         outlineRenderer.DOKill();
-        outlineRenderer.DOColor(selected ? settings.outlineColor : Color.clear, 0.1f);
+        outlineRenderer.DOColor(selected ? settings.OutlineColor : Color.clear, 0.1f);
 
         if (selected)
         {
             DOTween.Sequence()
                 .SetTarget(transform)
                 .SetRecyclable(true)
-                .Append(transform.DOLocalMoveY(_restLocalPos.y - settings.anticipationDip, settings.anticipationDuration).SetEase(Ease.OutQuad))
-                .Append(transform.DOLocalMoveY(_restLocalPos.y + settings.liftAmount, settings.liftDuration).SetEase(Ease.OutBack));
+                .Append(transform.DOLocalMoveY(_restLocalPos.y - settings.AnticipationDip, settings.AnticipationDuration).SetEase(Ease.OutQuad))
+                .Append(transform.DOLocalMoveY(_restLocalPos.y + settings.LiftAmount, settings.LiftDuration).SetEase(Ease.OutBack));
         }
         else
         {
-            transform.DOLocalMoveY(_restLocalPos.y, settings.liftDuration).SetEase(Ease.OutBounce);
+            transform.DOLocalMoveY(_restLocalPos.y, settings.LiftDuration).SetEase(Ease.OutBounce);
         }
     }
 
@@ -192,19 +136,19 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _shakeOnComplete = onComplete;
         transform.DOKill();
-        var snapY = _isSelected ? _restLocalPos.y + settings.liftAmount : _restLocalPos.y;
+        var snapY = _isSelected ? _restLocalPos.y + settings.LiftAmount : _restLocalPos.y;
         transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
 
         var x = _restLocalPos.x;
-        var d = settings.shakeMagnitude;
-        var t = settings.shakeDuration;
+        var d = settings.ShakeMagnitude;
+        var t = settings.ShakeDuration;
 
         DOTween.Sequence()
             .SetRecyclable(true)
             .Append(transform.DOLocalMoveX(x + d, t).SetEase(Ease.OutExpo))
             .Append(transform.DOLocalMoveX(x - d, t).SetEase(Ease.InOutSine))
-            .Append(transform.DOLocalMoveX(x + d * settings.shakeDecay1, t).SetEase(Ease.InOutSine))
-            .Append(transform.DOLocalMoveX(x - d * settings.shakeDecay2, t).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMoveX(x + d * settings.ShakeDecay1, t).SetEase(Ease.InOutSine))
+            .Append(transform.DOLocalMoveX(x - d * settings.ShakeDecay2, t).SetEase(Ease.InOutSine))
             .Append(transform.DOLocalMoveX(x, t).SetEase(Ease.OutSine))
             .OnComplete(_cachedInvokeShakeComplete);
     }
@@ -213,20 +157,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         get
         {
-            if (_waters.Count == 0)
-            {
-                return false;
-            }
+            if (_waters.Count == 0) return false;
 
             var first = _waters[0].Color;
             for (var i = 1; i < _waters.Count; i++)
             {
-                if (_waters[i].Color != first)
-                {
-                    return false;
-                }
+                if (_waters[i].Color != first) return false;
             }
-
             return true;
         }
     }
@@ -235,12 +172,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         for (var i = 0; i < _waters.Count; i++)
         {
-            if (_waters[i].Color == color)
-            {
-                return true;
-            }
+            if (_waters[i].Color == color) return true;
         }
-
         return false;
     }
 
@@ -255,8 +188,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         return DOTween.Sequence()
             .SetRecyclable(true)
-            .Append(transform.DOScale(new Vector3(settings.solvedSquashX, settings.solvedSquashY, 1f), settings.solvedSquashDuration).SetEase(Ease.OutQuad))
-            .Append(transform.DOScale(Vector3.one, settings.solvedBounceDuration).SetEase(Ease.OutElastic));
+            .Append(transform.DOScale(new Vector3(settings.SolvedSquashX, settings.SolvedSquashY, 1f), settings.SolvedSquashDuration).SetEase(Ease.OutQuad))
+            .Append(transform.DOScale(Vector3.one, settings.SolvedBounceDuration).SetEase(Ease.OutElastic));
     }
 
     // Arc movement to pour position (principle: Arc)
@@ -270,31 +203,31 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         _pourLineColor = TopColor;
         var isLeft = transform.position.x < target.transform.position.x;
-        var signedOffsetX = isLeft ? -settings.pourOffsetX : settings.pourOffsetX;
-        var signedAngle = isLeft ? -settings.pourAngle : settings.pourAngle;
+        var signedOffsetX = isLeft ? -settings.PourOffsetX : settings.PourOffsetX;
+        var signedAngle = isLeft ? -settings.PourAngle : settings.PourAngle;
 
         var pourWorldPos = new Vector3(
             target.HeadWorldPos.x + signedOffsetX,
-            target.HeadWorldPos.y - tubeHead.localPosition.y + settings.pourHeightOffset,
+            target.HeadWorldPos.y - tubeHead.localPosition.y + settings.PourHeightOffset,
             0f
         );
         var arcPeak = new Vector3(
             (transform.position.x + pourWorldPos.x) * 0.5f,
-            Mathf.Max(transform.position.y, pourWorldPos.y) + settings.pourArcHeight,
+            Mathf.Max(transform.position.y, pourWorldPos.y) + settings.PourArcHeight,
             0f
         );
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
 
         _pourSequence = DOTween.Sequence().SetRecyclable(true);
-        _pourSequence.Append(transform.DOMove(arcPeak, settings.pourDuration * 0.45f).SetEase(Ease.OutSine));
-        _pourSequence.Append(transform.DOMove(pourWorldPos, settings.pourDuration * 0.55f).SetEase(Ease.InSine));
-        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), settings.pourDuration).SetEase(Ease.OutBack));
+        _pourSequence.Append(transform.DOMove(arcPeak, settings.PourDuration * 0.45f).SetEase(Ease.OutSine));
+        _pourSequence.Append(transform.DOMove(pourWorldPos, settings.PourDuration * 0.55f).SetEase(Ease.InSine));
+        _pourSequence.Append(transform.DORotate(new Vector3(0f, 0f, signedAngle), settings.PourDuration).SetEase(Ease.OutBack));
         _pourSequence.AppendCallback(_cachedTransferWater);
         _pourSequence.AppendCallback(_cachedShowPourLine);
-        _pourSequence.AppendInterval(settings.pourHoldDuration);
+        _pourSequence.AppendInterval(settings.PourHoldDuration);
         _pourSequence.AppendCallback(_cachedHideTargetLine);
-        _pourSequence.Append(transform.DORotate(Vector3.zero, settings.pourDuration).SetEase(Ease.OutBack));
-        _pourSequence.Append(transform.DOMove(restWorldPos, settings.pourDuration).SetEase(Ease.OutBack));
+        _pourSequence.Append(transform.DORotate(Vector3.zero, settings.PourDuration).SetEase(Ease.OutBack));
+        _pourSequence.Append(transform.DOMove(restWorldPos, settings.PourDuration).SetEase(Ease.OutBack));
         _pourSequence.OnComplete(_cachedInvokePourComplete);
     }
 
@@ -307,18 +240,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     public void HideLine()
     {
         lineRenderer.DOKill();
-        lineRenderer.DOFade(0f, settings.pourDuration);
+        lineRenderer.DOFade(0f, settings.PourDuration);
     }
 
-    private void ShowPourLineOnTarget()
-    {
-        _pourTarget.ShowLine(_pourLineColor);
-    }
-
-    private void HideTargetLine()
-    {
-        _pourTarget.HideLine();
-    }
+    private void ShowPourLineOnTarget() => _pourTarget.ShowLine(_pourLineColor);
+    private void HideTargetLine() => _pourTarget.HideLine();
 
     private void TransferWater(TubeView target)
     {
@@ -328,7 +254,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         for (var i = 0; i < toMove; i++)
         {
             RemoveTopWater();
-            target.AddWater(color, i * settings.waterRevealDuration);
+            target.AddWater(color, i * settings.WaterRevealDuration);
         }
     }
 
@@ -338,15 +264,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var water = _waters[last];
         _waters.RemoveAt(last);
         RevealTopWater();
-        water.AnimateRevealTo(0f, settings.waterRevealDuration).OnComplete(water.CachedDestroySelf);
+        water.AnimateRevealTo(0f, settings.WaterRevealDuration).OnComplete(water.CachedDestroySelf);
     }
 
     private void RevealTopWater()
     {
         if (_waters.Count > 0)
-        {
             _waters[_waters.Count - 1].SetHidden(false);
-        }
     }
 
     private void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false, float animDelay = 0f)
@@ -354,20 +278,17 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var water = Instantiate(_waterPrefab, waterContainer);
         water.Init(color);
 
-        if (isHidden)
-        {
-            water.SetHidden(true);
-        }
+        if (isHidden) water.SetHidden(true);
 
         if (animate)
         {
             water.SetReveal(0f);
-            water.AnimateRevealTo(1f, settings.waterRevealDuration).SetDelay(animDelay);
+            water.AnimateRevealTo(1f, settings.WaterRevealDuration).SetDelay(animDelay);
         }
 
         water.transform.localPosition = new Vector3(
             0f,
-            (slotIndex + 0.5f) * settings.waterSlotHeight - slotIndex * settings.waterYStackOffset,
+            (slotIndex + 0.5f) * settings.WaterSlotHeight - slotIndex * settings.WaterYStackOffset,
             0f
         );
         water.SetSortingOrder(slotIndex);
@@ -377,7 +298,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private void ResizeTube(int capacity)
     {
-        var extraHeight = (capacity - defaultCapacity) * settings.waterSlotHeight;
+        var extraHeight = (capacity - defaultCapacity) * settings.WaterSlotHeight;
 
         var size = tubeRenderer.size;
         tubeRenderer.size = new Vector2(size.x, size.y + extraHeight);
@@ -393,7 +314,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var lt = lineRenderer.transform;
         lt.localScale = new Vector3(lt.localScale.x, tubeRenderer.size.y, lt.localScale.z);
 
-        var t = settings.outlineThickness;
+        var t = settings.OutlineThickness;
         outlineRenderer.size = new Vector2(tubeRenderer.size.x + t * 2f, tubeRenderer.size.y + t * 2f);
     }
 }

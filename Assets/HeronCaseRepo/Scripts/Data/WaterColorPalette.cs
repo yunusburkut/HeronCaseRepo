@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
 public struct WaterColorEntry
@@ -12,7 +13,7 @@ public struct WaterColorEntry
 [CreateAssetMenu(fileName = "WaterColorPalette", menuName = "WaterSort/Color Palette")]
 public class WaterColorPalette : ScriptableObject
 {
-    public WaterColorEntry[] entries;
+    [SerializeField, FormerlySerializedAs("entries")] private WaterColorEntry[] _entries;
 
     private Dictionary<WaterColor, Color> _lookup;
 
@@ -33,8 +34,8 @@ public class WaterColorPalette : ScriptableObject
 
     private void BuildLookup()
     {
-        _lookup = new Dictionary<WaterColor, Color>(entries.Length);
-        foreach (var entry in entries)
+        _lookup = new Dictionary<WaterColor, Color>(_entries.Length);
+        foreach (var entry in _entries)
         {
             _lookup[entry.colorId] = entry.color;
         }

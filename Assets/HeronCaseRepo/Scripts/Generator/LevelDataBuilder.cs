@@ -7,19 +7,17 @@ public static class LevelDataBuilder
     public static List<TubeData> Build(LevelData data, int seedOverride = -1)
     {
         var pool = BuildPool(data);
-        Shuffle(pool, seedOverride >= 0 ? seedOverride : data.seed);
+        Shuffle(pool, seedOverride >= 0 ? seedOverride : data.Seed);
         return DistributeIntoTubes(pool, data);
     }
 
     private static List<WaterEntry> BuildPool(LevelData data)
     {
-        var pool = new List<WaterEntry>(data.colors.Count * data.tubeCapacity);
-        foreach (var color in data.colors)
+        var pool = new List<WaterEntry>(data.Colors.Count * data.TubeCapacity);
+        foreach (var color in data.Colors)
         {
-            for (var i = 0; i < data.tubeCapacity; i++)
-            {
+            for (var i = 0; i < data.TubeCapacity; i++)
                 pool.Add(new WaterEntry { color = color, modifier = WaterModifier.None });
-            }
         }
         return pool;
     }
@@ -36,23 +34,18 @@ public static class LevelDataBuilder
 
     private static List<TubeData> DistributeIntoTubes(List<WaterEntry> pool, LevelData data)
     {
-        var tubes = new List<TubeData>(data.colors.Count + data.emptyTubeCount);
+        var tubes = new List<TubeData>(data.Colors.Count + data.EmptyTubeCount);
 
-        for (var i = 0; i < data.colors.Count; i++)
+        for (var i = 0; i < data.Colors.Count; i++)
         {
-            var tube = new TubeData { capacity = data.tubeCapacity };
-            for (var j = 0; j < data.tubeCapacity; j++)
-            {
-                tube.waters.Add(pool[i * data.tubeCapacity + j]);
-            }
-            
+            var tube = new TubeData { capacity = data.TubeCapacity };
+            for (var j = 0; j < data.TubeCapacity; j++)
+                tube.waters.Add(pool[i * data.TubeCapacity + j]);
             tubes.Add(tube);
         }
 
-        for (var i = 0; i < data.emptyTubeCount; i++)
-        {
-            tubes.Add(new TubeData { capacity = data.tubeCapacity });
-        }
+        for (var i = 0; i < data.EmptyTubeCount; i++)
+            tubes.Add(new TubeData { capacity = data.TubeCapacity });
 
         return tubes;
     }
