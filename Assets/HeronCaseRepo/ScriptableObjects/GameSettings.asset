@@ -25,7 +25,7 @@ MonoBehaviour:
   _pourAngle: 120
   _pourDuration: 0.15
   _pourHeightOffset: 5
-  _pourHoldDuration: 0.15
+  _pourHoldDuration: 0.2
   _pourArcHeight: 1.5
   _shakeMagnitude: 0.08
   _shakeDuration: 0.04

@@ -145,8 +145,10 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         if (fillVFX != null)
         {
+            var main = fillVFX.main;
+            main.startColor = TopColor;
             fillVFX.Play();
-            return _anim.PlayMarkSolved(fillVFX.main.duration);
+            return _anim.PlayMarkSolved(main.duration);
         }
 
         return _anim.PlayMarkSolved();
