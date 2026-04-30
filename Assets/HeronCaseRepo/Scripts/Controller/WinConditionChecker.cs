@@ -31,7 +31,16 @@ public class WinConditionChecker : IDisposable
     {
         var tweenTo = TryMarkSolved(e.To);
         var tweenFrom = TryMarkSolved(e.From);
-        var tween = tweenTo ?? tweenFrom;
+
+        Tween tween;
+        if (tweenTo != null)
+        {
+            tween = tweenTo;
+        }
+        else
+        {
+            tween = tweenFrom;
+        }
 
         if (!MoveValidator.IsLevelComplete(_allTubes))
         {

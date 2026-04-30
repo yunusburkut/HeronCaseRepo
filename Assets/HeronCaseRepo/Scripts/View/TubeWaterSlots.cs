@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine;
 
 public sealed class TubeWaterSlots
 {
@@ -11,22 +11,45 @@ public sealed class TubeWaterSlots
     private readonly int _capacity;
 
     public bool IsFull => _waters.Count >= _capacity;
+
     public bool IsEmpty => _waters.Count == 0;
+
     public int AvailableSlots => _capacity - _waters.Count;
-    public Color TopColor => _waters.Count > 0 ? _waters[_waters.Count - 1].Color : Color.clear;
+
+    public Color TopColor
+    {
+        get
+        {
+            if (_waters.Count > 0)
+            {
+                return _waters[_waters.Count - 1].Color;
+            }
+
+            return Color.clear;
+        }
+    }
 
     public int TopColorCount
     {
         get
         {
-            if (_waters.Count == 0) return 0;
+            if (_waters.Count == 0)
+            {
+                return 0;
+            }
+
             var top = _waters[_waters.Count - 1].Color;
             var count = 0;
             for (var i = _waters.Count - 1; i >= 0; i--)
             {
-                if (_waters[i].Color != top) break;
+                if (_waters[i].Color != top)
+                {
+                    break;
+                }
+
                 count++;
             }
+
             return count;
         }
     }
@@ -35,10 +58,20 @@ public sealed class TubeWaterSlots
     {
         get
         {
-            if (_waters.Count == 0) return false;
+            if (_waters.Count == 0)
+            {
+                return false;
+            }
+
             var first = _waters[0].Color;
             for (var i = 1; i < _waters.Count; i++)
-                if (_waters[i].Color != first) return false;
+            {
+                if (_waters[i].Color != first)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
     }
@@ -54,7 +87,13 @@ public sealed class TubeWaterSlots
     public bool HasColor(Color color)
     {
         for (var i = 0; i < _waters.Count; i++)
-            if (_waters[i].Color == color) return true;
+        {
+            if (_waters[i].Color == color)
+            {
+                return true;
+            } 
+        }
+
         return false;
     }
 
@@ -85,8 +124,10 @@ public sealed class TubeWaterSlots
         _waters.Add(water);
     }
 
-    public void AddWater(Color color, float delay = 0f) =>
+    public void AddWater(Color color, float delay = 0f)
+    {
         SpawnWater(color, _waters.Count, animate: true, animDelay: delay);
+    }
 
     public void RemoveTopWater()
     {

@@ -19,10 +19,25 @@ public class PourCoordinator : IDisposable
         EventBus<PourAnimationCompletedEvent>.Unsubscribe(OnPourAnimationCompleted);
     }
 
-    public bool IsLocked(TubeView tube) => _lockedTubes.Contains(tube);
-    public bool HasActivePour(TubeView to) => _activeTargets.ContainsKey(to);
-    public void Lock(TubeView tube) => _lockedTubes.Add(tube);
-    public void Unlock(TubeView tube) => _lockedTubes.Remove(tube);
+    public bool IsLocked(TubeView tube)
+    {
+        return _lockedTubes.Contains(tube);
+    }
+
+    public bool HasActivePour(TubeView to)
+    {
+        return _activeTargets.ContainsKey(to);
+    }
+
+    public void Lock(TubeView tube)
+    {
+        _lockedTubes.Add(tube);
+    }
+
+    public void Unlock(TubeView tube)
+    {
+        _lockedTubes.Remove(tube);
+    }
 
     public void StartPour(TubeView from, TubeView to)
     {

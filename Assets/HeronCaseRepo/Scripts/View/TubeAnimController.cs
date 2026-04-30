@@ -29,7 +29,11 @@ public sealed class TubeAnimController
         _scope = scope;
     }
 
-    public void SetRestLocalPos(Vector3 pos) => _restLocalPos = pos;
+    public void SetRestLocalPos(Vector3 pos)
+    {
+        _restLocalPos = pos;
+    }
+
     public void PlaySelect(bool selected)
     {
         _selectTween?.Kill(false);
@@ -48,7 +52,7 @@ public sealed class TubeAnimController
             _selectTween = _scope.Add(_transform.DOLocalMoveY(_restLocalPos.y, _settings.LiftDuration).SetEase(Ease.OutBounce));
         }
     }
-    
+
     public void PlayShake(TweenCallback onComplete)
     {
         _selectTween?.Kill(false);
@@ -91,8 +95,26 @@ public sealed class TubeAnimController
         _pourSequence?.Kill(false);
 
         var isLeft = _transform.position.x < target.transform.position.x;
-        var signedOffsetX = isLeft ? -_settings.PourOffsetX : _settings.PourOffsetX;
-        var signedAngle = isLeft ? -_settings.PourAngle : _settings.PourAngle;
+
+        float signedOffsetX;
+        if (isLeft)
+        {
+            signedOffsetX = -_settings.PourOffsetX;
+        }
+        else
+        {
+            signedOffsetX = _settings.PourOffsetX;
+        }
+
+        float signedAngle;
+        if (isLeft)
+        {
+            signedAngle = -_settings.PourAngle;
+        }
+        else
+        {
+            signedAngle = _settings.PourAngle;
+        }
 
         var pourWorldPos = new Vector3(
             target.HeadWorldPos.x + signedOffsetX,
@@ -123,7 +145,9 @@ public sealed class TubeAnimController
     public void AcceleratePour(float timeScale)
     {
         if (_pourSequence != null && _pourSequence.IsActive())
+        {
             _pourSequence.timeScale = timeScale;
+        }
     }
 
     public void ShowLine(Color color)

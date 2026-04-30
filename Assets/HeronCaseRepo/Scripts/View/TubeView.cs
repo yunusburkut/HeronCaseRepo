@@ -33,13 +33,19 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private TubeAnimController _anim;
 
     public bool IsFull => _waterSlots.IsFull;
+
     public bool IsEmpty => _waterSlots.IsEmpty;
+
     public bool IsSolved { get; private set; }
+
     public bool IsSingleColor => _waterSlots.IsSingleColor;
+
     public Color TopColor => _waterSlots.TopColor;
+
     public Vector3 HeadWorldPos => tubeHead.position;
 
     private int AvailableSlots => _waterSlots.AvailableSlots;
+
     private int TopColorCount => _waterSlots.TopColorCount;
 
     private void Awake()
@@ -57,7 +63,10 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         outlineRenderer.color = Color.clear;
     }
 
-    private void OnDestroy() => _scope.KillAll();
+    private void OnDestroy()
+    {
+        _scope.KillAll();
+    }
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
     {
@@ -76,14 +85,30 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _waterSlots.RevealTopWater();
     }
 
-    private void DoTransferWater() => TransferWater(_pourTarget);
-    private void InvokePourComplete() => EventBus<PourAnimationCompletedEvent>.Publish(new PourAnimationCompletedEvent { From = this, To = _pourTarget });
-    private void InvokeShakeComplete() => EventBus<ShakeCompletedEvent>.Publish(new ShakeCompletedEvent { Tube = this });
+    private void DoTransferWater()
+    {
+        TransferWater(_pourTarget);
+    }
 
-    public void OnPointerClick(PointerEventData eventData) =>
+    private void InvokePourComplete()
+    {
+        EventBus<PourAnimationCompletedEvent>.Publish(new PourAnimationCompletedEvent { From = this, To = _pourTarget });
+    }
+
+    private void InvokeShakeComplete()
+    {
+        EventBus<ShakeCompletedEvent>.Publish(new ShakeCompletedEvent { Tube = this });
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
         EventBus<TubeClickedEvent>.Publish(new TubeClickedEvent { Tube = this });
+    }
 
-    public void AccelerateCurrentPour(float timeScale) => _anim.AcceleratePour(timeScale);
+    public void AccelerateCurrentPour(float timeScale)
+    {
+        _anim.AcceleratePour(timeScale);
+    }
 
     public void SetSelected(bool selected)
     {
@@ -93,12 +118,24 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public void Shake()
     {
-        var snapY = _isSelected ? _restLocalPos.y + settings.LiftAmount : _restLocalPos.y;
+        float snapY;
+        if (_isSelected)
+        {
+            snapY = _restLocalPos.y + settings.LiftAmount;
+        }
+        else
+        {
+            snapY = _restLocalPos.y;
+        }
+
         transform.localPosition = new Vector3(_restLocalPos.x, snapY, _restLocalPos.z);
         _anim.PlayShake(_cachedInvokeShakeComplete);
     }
 
-    public bool HasColor(Color color) => _waterSlots.HasColor(color);
+    public bool HasColor(Color color)
+    {
+        return _waterSlots.HasColor(color);
+    }
 
     public Tween MarkSolved()
     {
@@ -116,11 +153,25 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _anim.PlayPourInto(target, restWorldPos, _cachedTransferWater, _cachedShowPourLine, _cachedHideTargetLine, _cachedInvokePourComplete);
     }
 
-    public void ShowLine(Color color) => _anim.ShowLine(color);
-    public void HideLine() => _anim.HideLine();
+    private void ShowLine(Color color)
+    {
+        _anim.ShowLine(color);
+    }
 
-    private void ShowPourLineOnTarget() => _pourTarget.ShowLine(_pourLineColor);
-    private void HideTargetLine() => _pourTarget.HideLine();
+    private void HideLine()
+    {
+        _anim.HideLine();
+    }
+
+    private void ShowPourLineOnTarget()
+    {
+        _pourTarget.ShowLine(_pourLineColor);
+    }
+
+    private void HideTargetLine()
+    {
+        _pourTarget.HideLine();
+    }
 
     private void TransferWater(TubeView target)
     {

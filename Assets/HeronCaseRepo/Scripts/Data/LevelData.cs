@@ -19,10 +19,17 @@ public class LevelData : ScriptableObject
     [SerializeField, FormerlySerializedAs("tubes")] private List<TubeData> _tubes = new List<TubeData>();
 
     public int TubeCapacity => _tubeCapacity;
+
     public int EmptyTubeCount => _emptyTubeCount;
+
     public List<WaterColor> Colors => _colors;
+
     public int Seed => _seed;
+
     public List<TubeData> Tubes => _tubes;
 
-    public void SetTubes(List<TubeData> tubes) => _tubes = tubes;
+    public void SetTubes(List<TubeData> tubes)
+    {
+        _tubes = tubes;
+    }
 }

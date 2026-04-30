@@ -40,33 +40,195 @@ public class GameSettings : ScriptableObject
     [Header("Game")]
     [SerializeField, FormerlySerializedAs("queuedPourSpeedMultiplier")] private float _queuedPourSpeedMultiplier = 1.75f;
 
-    public float WaterSlotHeight => _waterSlotHeight;
-    public float WaterYStackOffset => _waterYStackOffset;
-    public float WaterRevealDuration => _waterRevealDuration;
+    public float WaterSlotHeight
+    {
+        get
+        {
+            return _waterSlotHeight;
+        }
+    }
 
-    public Color OutlineColor => _outlineColor;
-    public float OutlineThickness => _outlineThickness;
-    public float LiftAmount => _liftAmount;
-    public float LiftDuration => _liftDuration;
-    public float AnticipationDip => _anticipationDip;
-    public float AnticipationDuration => _anticipationDuration;
+    public float WaterYStackOffset
+    {
+        get
+        {
+            return _waterYStackOffset;
+        }
+    }
 
-    public float PourOffsetX => _pourOffsetX;
-    public float PourAngle => _pourAngle;
-    public float PourDuration => _pourDuration;
-    public float PourHeightOffset => _pourHeightOffset;
-    public float PourHoldDuration => _pourHoldDuration;
-    public float PourArcHeight => _pourArcHeight;
+    public float WaterRevealDuration
+    {
+        get
+        {
+            return _waterRevealDuration;
+        }
+    }
 
-    public float ShakeMagnitude => _shakeMagnitude;
-    public float ShakeDuration => _shakeDuration;
-    public float ShakeDecay1 => _shakeDecay1;
-    public float ShakeDecay2 => _shakeDecay2;
+    public Color OutlineColor
+    {
+        get
+        {
+            return _outlineColor;
+        }
+    }
 
-    public float SolvedSquashX => _solvedSquashX;
-    public float SolvedSquashY => _solvedSquashY;
-    public float SolvedSquashDuration => _solvedSquashDuration;
-    public float SolvedBounceDuration => _solvedBounceDuration;
+    public float OutlineThickness
+    {
+        get
+        {
+            return _outlineThickness;
+        }
+    }
 
-    public float QueuedPourSpeedMultiplier => _queuedPourSpeedMultiplier;
+    public float LiftAmount
+    {
+        get
+        {
+            return _liftAmount;
+        }
+    }
+
+    public float LiftDuration
+    {
+        get
+        {
+            return _liftDuration;
+        }
+    }
+
+    public float AnticipationDip
+    {
+        get
+        {
+            return _anticipationDip;
+        }
+    }
+
+    public float AnticipationDuration
+    {
+        get
+        {
+            return _anticipationDuration;
+        }
+    }
+
+    public float PourOffsetX
+    {
+        get
+        {
+            return _pourOffsetX;
+        }
+    }
+
+    public float PourAngle
+    {
+        get
+        {
+            return _pourAngle;
+        }
+    }
+
+    public float PourDuration
+    {
+        get
+        {
+            return _pourDuration;
+        }
+    }
+
+    public float PourHeightOffset
+    {
+        get
+        {
+            return _pourHeightOffset;
+        }
+    }
+
+    public float PourHoldDuration
+    {
+        get
+        {
+            return _pourHoldDuration;
+        }
+    }
+
+    public float PourArcHeight
+    {
+        get
+        {
+            return _pourArcHeight;
+        }
+    }
+
+    public float ShakeMagnitude
+    {
+        get
+        {
+            return _shakeMagnitude;
+        }
+    }
+
+    public float ShakeDuration
+    {
+        get
+        {
+            return _shakeDuration;
+        }
+    }
+
+    public float ShakeDecay1
+    {
+        get
+        {
+            return _shakeDecay1;
+        }
+    }
+
+    public float ShakeDecay2
+    {
+        get
+        {
+            return _shakeDecay2;
+        }
+    }
+
+    public float SolvedSquashX
+    {
+        get
+        {
+            return _solvedSquashX;
+        }
+    }
+
+    public float SolvedSquashY
+    {
+        get
+        {
+            return _solvedSquashY;
+        }
+    }
+
+    public float SolvedSquashDuration
+    {
+        get
+        {
+            return _solvedSquashDuration;
+        }
+    }
+
+    public float SolvedBounceDuration
+    {
+        get
+        {
+            return _solvedBounceDuration;
+        }
+    }
+
+    public float QueuedPourSpeedMultiplier
+    {
+        get
+        {
+            return _queuedPourSpeedMultiplier;
+        }
+    }
 }

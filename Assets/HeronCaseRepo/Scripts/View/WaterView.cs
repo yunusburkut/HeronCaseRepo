@@ -21,9 +21,15 @@ public class WaterView : MonoBehaviour
         CachedDestroySelf = DestroySelf;
     }
 
-    private void OnDestroy() => _scope.KillAll();
+    private void OnDestroy()
+    {
+        _scope.KillAll();
+    }
 
-    private void DestroySelf() => Destroy(gameObject);
+    private void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 
     public void Init(Color color)
     {
@@ -52,6 +58,7 @@ public class WaterView : MonoBehaviour
     public Tween AnimateRevealTo(float to, float duration)
     {
         var ease = to > _revealAmount ? Ease.OutCubic : Ease.InCubic;
+
         return _scope.Add(DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration).SetEase(ease));
     }
 }
