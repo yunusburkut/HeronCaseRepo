@@ -28,7 +28,7 @@ public class LevelController : MonoBehaviour
     public void StartLevel()
     {
         ClearLevel();
-        SpawnLevel(LevelDataBuilder.Build(levelData, 0));
+        SpawnLevel(levelData.Tubes.Count > 0 ? levelData.Tubes : LevelDataBuilder.Build(levelData, 0));
     }
 
     public void ClearLevel()
