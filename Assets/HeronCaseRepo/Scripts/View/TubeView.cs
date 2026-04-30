@@ -143,15 +143,24 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         IsSolved = true;
         tubeCollider.enabled = false;
 
-        if (fillVFX != null)
-        {
-            var main = fillVFX.main;
-            main.startColor = TopColor;
-            fillVFX.Play();
-            return _anim.PlayMarkSolved(main.duration);
-        }
+        var waterDelay = Mathf.Max(0f, _waterSlots.FillAnimEndTime - Time.time);
 
-        return _anim.PlayMarkSolved();
+        if (fillVFX == null)
+        {
+            return _anim.PlayMarkSolved(waterDelay);
+        }
+        
+        var main = fillVFX.main;
+        main.startColor = TopColor;
+        var vfxDuration = main.duration;
+
+        _scope.Add(DOVirtual.DelayedCall(waterDelay, () =>
+        {
+            fillVFX.Play();
+        }));
+
+        return _anim.PlayMarkSolved(waterDelay + vfxDuration);
+
     }
 
     public void PourInto(TubeView target)

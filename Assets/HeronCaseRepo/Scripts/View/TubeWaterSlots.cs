@@ -10,6 +10,8 @@ public sealed class TubeWaterSlots
     private readonly GameSettings _settings;
     private readonly int _capacity;
 
+    public float FillAnimEndTime { get; private set; }
+
     public bool IsFull => _waters.Count >= _capacity;
 
     public bool IsEmpty => _waters.Count == 0;
@@ -127,6 +129,7 @@ public sealed class TubeWaterSlots
     public void AddWater(Color color, float delay = 0f)
     {
         SpawnWater(color, _waters.Count, animate: true, animDelay: delay);
+        FillAnimEndTime = Time.time + delay + _settings.WaterRevealDuration;
     }
 
     public void RemoveTopWater()
