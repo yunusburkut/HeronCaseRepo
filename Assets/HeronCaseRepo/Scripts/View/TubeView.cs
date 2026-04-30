@@ -12,6 +12,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private BoxCollider2D tubeCollider;
     [SerializeField] private RectTransform waterRect;
     [SerializeField] private SpriteRenderer lineRenderer;
+    [SerializeField] private ParticleSystem fillVFX;
 
     [Header("Settings")]
     [SerializeField] private GameSettings settings;
@@ -141,6 +142,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         IsSolved = true;
         tubeCollider.enabled = false;
+
+        if (fillVFX != null)
+        {
+            fillVFX.Play();
+            return _anim.PlayMarkSolved(fillVFX.main.duration);
+        }
+
         return _anim.PlayMarkSolved();
     }
 

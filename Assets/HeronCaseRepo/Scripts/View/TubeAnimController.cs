@@ -71,7 +71,7 @@ public sealed class TubeAnimController
             .OnComplete(onComplete));
     }
 
-    public Tween PlayMarkSolved()
+    public Tween PlayMarkSolved(float preDelay = 0f)
     {
         _selectTween?.Kill(false);
         _shakeTween?.Kill(false);
@@ -82,6 +82,7 @@ public sealed class TubeAnimController
         _transform.localScale = Vector3.one;
 
         _solvedTween = _scope.Add(DOTween.Sequence()
+            .AppendInterval(preDelay)
             .Append(_transform.DOScale(new Vector3(_settings.SolvedSquashX, _settings.SolvedSquashY, 1f), _settings.SolvedSquashDuration).SetEase(Ease.OutQuad))
             .Append(_transform.DOScale(Vector3.one, _settings.SolvedBounceDuration).SetEase(Ease.OutElastic)));
 
