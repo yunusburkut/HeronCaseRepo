@@ -14,6 +14,7 @@ public class LevelController : MonoBehaviour
     [Header("Layout")]
     [SerializeField] private float tubeSpacing = 1.5f;
     [SerializeField] private Transform tubesContainer;
+    [SerializeField] private GameSettings settings;
 
     private ITubeInteractionController _levelController;
     private WinConditionChecker _winChecker;
@@ -52,6 +53,7 @@ public class LevelController : MonoBehaviour
             var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
             tubeView.name = $"Tube_{i}";
             tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
+            tubeView.PlayEnterAnimation(i * settings.EnterStaggerDelay);
             _tubeViews.Add(tubeView);
         }
 

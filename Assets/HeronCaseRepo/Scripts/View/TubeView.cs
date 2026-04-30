@@ -138,6 +138,18 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         return _waterSlots.HasColor(color);
     }
 
+    public void PlayEnterAnimation(float delay)
+    {
+        var cam = Camera.main;
+        var worldRightX = cam.transform.position.x + cam.orthographicSize * cam.aspect + 2f;
+        var localRightX = transform.parent.InverseTransformPoint(new Vector3(worldRightX, 0f, 0f)).x;
+
+        transform.localPosition = new Vector3(localRightX, _restLocalPos.y, _restLocalPos.z);
+        _scope.Add(transform.DOLocalMoveX(_restLocalPos.x, settings.EnterDuration)
+            .SetDelay(delay)
+            .SetEase(Ease.OutBack));
+    }
+
     public Tween MarkSolved()
     {
         IsSolved = true;

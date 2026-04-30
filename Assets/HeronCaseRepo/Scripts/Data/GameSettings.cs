@@ -37,6 +37,10 @@ public class GameSettings : ScriptableObject
     [SerializeField, FormerlySerializedAs("solvedSquashDuration")] private float _solvedSquashDuration = 0.08f;
     [SerializeField, FormerlySerializedAs("solvedBounceDuration")] private float _solvedBounceDuration = 0.5f;
 
+    [Header("Enter Animation")]
+    [SerializeField] private float _enterDuration = 0.6f;
+    [SerializeField] private float _enterStaggerDelay = 0.08f;
+
     [Header("Game")]
     [SerializeField, FormerlySerializedAs("queuedPourSpeedMultiplier")] private float _queuedPourSpeedMultiplier = 1.75f;
 
@@ -229,6 +233,22 @@ public class GameSettings : ScriptableObject
         get
         {
             return _queuedPourSpeedMultiplier;
+        }
+    }
+
+    public float EnterDuration
+    {
+        get
+        {
+            return _enterDuration;
+        }
+    }
+
+    public float EnterStaggerDelay
+    {
+        get
+        {
+            return _enterStaggerDelay;
         }
     }
 }
