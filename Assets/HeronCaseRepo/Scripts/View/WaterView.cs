@@ -10,6 +10,7 @@ public class WaterView : MonoBehaviour
     private MaterialPropertyBlock _mpb;
     private float _revealAmount = 1f;
     private TweenScope _scope;
+    private Tween _heightTween;
 
     public TweenCallback CachedDestroySelf { get; private set; }
     public Color Color { get; private set; }
@@ -53,6 +54,30 @@ public class WaterView : MonoBehaviour
         spriteRenderer.GetPropertyBlock(_mpb);
         _mpb.SetFloat(RevealAmountId, _revealAmount);
         spriteRenderer.SetPropertyBlock(_mpb);
+    }
+
+    public void SetHeight(float height)
+    {
+        var s = spriteRenderer.size;
+        spriteRenderer.size = new Vector2(s.x, height);
+    }
+
+    public Tween AnimateHeightTo(float targetHeight, float targetCenterY, float duration, float delay = 0f)
+    {
+        _heightTween?.Kill(false);
+        var seq = DOTween.Sequence();
+        if (delay > 0f)
+        {
+            seq.AppendInterval(delay);
+        }
+        
+        seq.Append(DOTween.To(
+            () => spriteRenderer.size.y,
+            h => { var s = spriteRenderer.size; spriteRenderer.size = new Vector2(s.x, h); },
+            targetHeight, duration).SetEase(Ease.OutCubic));
+        seq.Join(transform.DOLocalMoveY(targetCenterY, duration).SetEase(Ease.OutCubic));
+        _heightTween = _scope.Add(seq);
+        return _heightTween;
     }
 
     public Tween AnimateRevealTo(float to, float duration)

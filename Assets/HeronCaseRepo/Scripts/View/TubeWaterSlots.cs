@@ -4,79 +4,31 @@ using UnityEngine;
 
 public sealed class TubeWaterSlots
 {
-    private readonly List<WaterView> _waters = new List<WaterView>();
+    private sealed class WaterSegment
+    {
+        public Color Color;
+        public int Count;
+        public int BaseSlot;
+        public WaterView View;
+        public bool IsHidden;
+    }
+
+    private readonly List<WaterSegment> _segments = new List<WaterSegment>();
     private readonly Transform _waterContainer;
     private readonly WaterView _waterPrefab;
     private readonly GameSettings _settings;
     private readonly int _capacity;
+    private int _totalCount;
 
     public float FillAnimEndTime { get; private set; }
 
-    public bool IsFull => _waters.Count >= _capacity;
+    public bool IsFull => _totalCount >= _capacity;
+    public bool IsEmpty => _totalCount == 0;
+    public int AvailableSlots => _capacity - _totalCount;
 
-    public bool IsEmpty => _waters.Count == 0;
-
-    public int AvailableSlots => _capacity - _waters.Count;
-
-    public Color TopColor
-    {
-        get
-        {
-            if (_waters.Count > 0)
-            {
-                return _waters[_waters.Count - 1].Color;
-            }
-
-            return Color.clear;
-        }
-    }
-
-    public int TopColorCount
-    {
-        get
-        {
-            if (_waters.Count == 0)
-            {
-                return 0;
-            }
-
-            var top = _waters[_waters.Count - 1].Color;
-            var count = 0;
-            for (var i = _waters.Count - 1; i >= 0; i--)
-            {
-                if (_waters[i].Color != top)
-                {
-                    break;
-                }
-
-                count++;
-            }
-
-            return count;
-        }
-    }
-
-    public bool IsSingleColor
-    {
-        get
-        {
-            if (_waters.Count == 0)
-            {
-                return false;
-            }
-
-            var first = _waters[0].Color;
-            for (var i = 1; i < _waters.Count; i++)
-            {
-                if (_waters[i].Color != first)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
+    public Color TopColor => _segments.Count > 0 ? _segments[_segments.Count - 1].Color : Color.clear;
+    public int TopColorCount => _segments.Count > 0 ? _segments[_segments.Count - 1].Count : 0;
+    public bool IsSingleColor => _segments.Count == 1;
 
     public TubeWaterSlots(Transform waterContainer, WaterView waterPrefab, GameSettings settings, int capacity)
     {
@@ -88,64 +40,122 @@ public sealed class TubeWaterSlots
 
     public bool HasColor(Color color)
     {
-        for (var i = 0; i < _waters.Count; i++)
+        for (var i = 0; i < _segments.Count; i++)
         {
-            if (_waters[i].Color == color)
-            {
-                return true;
-            } 
+            if (_segments[i].Color == color) return true;
         }
-
         return false;
     }
 
     public void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false, float animDelay = 0f)
     {
-        var water = Object.Instantiate(_waterPrefab, _waterContainer);
-        water.Init(color);
+        _totalCount++;
 
-        if (isHidden)
+        if (_segments.Count > 0)
         {
-            water.SetHidden(true);
+            var top = _segments[_segments.Count - 1];
+            if (top.Color == color && top.IsHidden == isHidden)
+            {
+                top.Count++;
+                if (animate)
+                {
+                    top.View.AnimateHeightTo(SegHeight(top.Count), SegCenterY(top.BaseSlot, top.Count), _settings.WaterRevealDuration, animDelay);
+                }
+                else
+                {
+                    top.View.SetHeight(SegHeight(top.Count));
+                    top.View.transform.localPosition = new Vector3(0f, SegCenterY(top.BaseSlot, top.Count), 0f);
+                }
+                return;
+            }
         }
+
+        var seg = new WaterSegment { Color = color, Count = 1, BaseSlot = slotIndex, IsHidden = isHidden };
+        seg.View = CreateView(color, slotIndex, isHidden);
 
         if (animate)
         {
-            water.SetReveal(0f);
-            water.AnimateRevealTo(1f, _settings.WaterRevealDuration).SetDelay(animDelay);
+            seg.View.SetHeight(0f);
+            seg.View.transform.localPosition = new Vector3(0f, SegCenterY(slotIndex, 0), 0f);
+            seg.View.AnimateHeightTo(SegHeight(1), SegCenterY(slotIndex, 1), _settings.WaterRevealDuration, animDelay);
         }
 
-        water.transform.localPosition = new Vector3(
-            0f,
-            (slotIndex + 0.5f) * _settings.WaterSlotHeight - slotIndex * _settings.WaterYStackOffset,
-            0f
-        );
-
-        water.SetSortingOrder(slotIndex);
-        water.name = $"Water_{slotIndex}";
-        _waters.Add(water);
+        _segments.Add(seg);
     }
 
-    public void AddWater(Color color, float delay = 0f)
+    public void AddWaters(Color color, int count)
     {
-        SpawnWater(color, _waters.Count, animate: true, animDelay: delay);
-        FillAnimEndTime = Time.time + delay + _settings.WaterRevealDuration;
+        var totalDuration = Mathf.Min(count * _settings.WaterRevealDuration, _settings.PourHoldDuration);
+        FillAnimEndTime = Time.time + totalDuration;
+
+        if (_segments.Count > 0 && _segments[_segments.Count - 1].Color == color)
+        {
+            var top = _segments[_segments.Count - 1];
+            top.Count += count;
+            _totalCount += count;
+            top.View.AnimateHeightTo(SegHeight(top.Count), SegCenterY(top.BaseSlot, top.Count), totalDuration);
+            return;
+        }
+
+        var slotIndex = _totalCount;
+        _totalCount += count;
+        var seg = new WaterSegment { Color = color, Count = count, BaseSlot = slotIndex };
+        seg.View = CreateView(color, slotIndex, false);
+        seg.View.SetHeight(0f);
+        seg.View.transform.localPosition = new Vector3(0f, SegCenterY(slotIndex, 0), 0f);
+        seg.View.AnimateHeightTo(SegHeight(count), SegCenterY(slotIndex, count), totalDuration);
+        _segments.Add(seg);
     }
 
-    public void RemoveTopWater()
+    public void RemoveTopWaters(int count)
     {
-        var last = _waters.Count - 1;
-        var water = _waters[last];
-        _waters.RemoveAt(last);
-        RevealTopWater();
-        water.AnimateRevealTo(0f, _settings.WaterRevealDuration).OnComplete(water.CachedDestroySelf);
+        if (_segments.Count == 0 || count <= 0) return;
+
+        var top = _segments[_segments.Count - 1];
+        _totalCount -= count;
+        var totalDuration = Mathf.Min(count * _settings.WaterRevealDuration, _settings.PourHoldDuration);
+
+        if (top.Count > count)
+        {
+            top.Count -= count;
+            top.View.AnimateHeightTo(SegHeight(top.Count), SegCenterY(top.BaseSlot, top.Count), totalDuration);
+        }
+        else
+        {
+            _segments.RemoveAt(_segments.Count - 1);
+            top.View.AnimateHeightTo(0f, SegCenterY(top.BaseSlot, 0), totalDuration)
+                .OnComplete(top.View.CachedDestroySelf);
+            RevealTopWater();
+        }
     }
 
     public void RevealTopWater()
     {
-        if (_waters.Count > 0)
+        if (_segments.Count > 0)
         {
-            _waters[_waters.Count - 1].SetHidden(false);
+            _segments[_segments.Count - 1].IsHidden = false;
+            _segments[_segments.Count - 1].View.SetHidden(false);
         }
     }
+
+    private WaterView CreateView(Color color, int sortOrder, bool hidden)
+    {
+        var water = Object.Instantiate(_waterPrefab, _waterContainer);
+        water.Init(color);
+        if (hidden)
+        {
+            water.SetHidden(true);
+        }
+        
+        water.SetHeight(SegHeight(1));
+        water.transform.localPosition = new Vector3(0f, SegCenterY(sortOrder, 1), 0f);
+        water.SetSortingOrder(sortOrder);
+        water.name = $"Water_{sortOrder}";
+        return water;
+    }
+
+    private float SegHeight(int count) => count * _settings.WaterSlotHeight;
+
+    private float SegCenterY(int baseSlot, int count) =>
+        (baseSlot + count * 0.5f) * _settings.WaterSlotHeight;
 }

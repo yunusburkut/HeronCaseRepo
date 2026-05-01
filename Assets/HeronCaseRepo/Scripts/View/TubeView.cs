@@ -208,11 +208,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         var color = TopColor;
         var toMove = Mathf.Min(TopColorCount, target.AvailableSlots);
-        for (var i = 0; i < toMove; i++)
-        {
-            _waterSlots.RemoveTopWater();
-            target._waterSlots.AddWater(color, i * settings.WaterRevealDuration);
-        }
+        _waterSlots.RemoveTopWaters(toMove);
+        target._waterSlots.AddWaters(color, toMove);
     }
 
     private void ResizeTube(int capacity)

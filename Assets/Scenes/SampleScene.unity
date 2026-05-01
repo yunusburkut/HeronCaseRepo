@@ -877,6 +877,7 @@ MonoBehaviour:
   waterPrefab: {fileID: 3028682428878221589, guid: 546f139844efaaa4fa6bad835de68daa, type: 3}
   tubeSpacing: 3
   tubesContainer: {fileID: 1450535832}
+  settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
 --- !u!114 &1450535831
 MonoBehaviour:
   m_ObjectHideFlags: 0
