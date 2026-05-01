@@ -15,6 +15,7 @@ MonoBehaviour:
   _waterSlotHeight: 1
   _waterYStackOffset: 0.25
   _waterRevealDuration: 0.3
+  _waterSegmentOverlap: 0.2
   _outlineColor: {r: 1, g: 0.85, b: 0.3, a: 1}
   _outlineThickness: 0.1
   _liftAmount: 2
@@ -35,4 +36,6 @@ MonoBehaviour:
   _solvedSquashY: 0.85
   _solvedSquashDuration: 0.08
   _solvedBounceDuration: 0.5
+  _enterDuration: 0.6
+  _enterStaggerDelay: 0.08
   _queuedPourSpeedMultiplier: 1.75
