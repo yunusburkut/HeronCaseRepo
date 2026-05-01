@@ -8,6 +8,7 @@ public class GameSettings : ScriptableObject
     [SerializeField, FormerlySerializedAs("waterSlotHeight")] private float _waterSlotHeight = 0.5f;
     [SerializeField, FormerlySerializedAs("waterYStackOffset")] private float _waterYStackOffset = 0.25f;
     [SerializeField, FormerlySerializedAs("waterRevealDuration")] private float _waterRevealDuration = 0.3f;
+    [SerializeField] private float _waterSegmentOverlap = 0.05f;
 
     [Header("Tube Selection")]
     [SerializeField, FormerlySerializedAs("outlineColor")] private Color _outlineColor = new Color(1f, 0.85f, 0.3f, 1f);
@@ -51,6 +52,8 @@ public class GameSettings : ScriptableObject
             return _waterSlotHeight;
         }
     }
+
+    public float WaterSegmentOverlap => _waterSegmentOverlap;
 
     public float WaterYStackOffset
     {

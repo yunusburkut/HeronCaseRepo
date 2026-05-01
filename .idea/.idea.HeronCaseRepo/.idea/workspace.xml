@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Asset/Water.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Asset/Water.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Asset/Water.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Asset/Water.png.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Prefabs/WaterPrefab.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Prefabs/WaterPrefab.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeWaterSlots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeWaterSlots.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/WaterView.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +119,7 @@
       <updated>1776991496711</updated>
       <workItem from="1776991499361" duration="10462000" />
       <workItem from="1777543232822" duration="1485000" />
-      <workItem from="1777571643070" duration="3870000" />
+      <workItem from="1777571643070" duration="4501000" />
     </task>
     <servers />
   </component>

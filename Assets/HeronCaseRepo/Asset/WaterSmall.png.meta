@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: dea7938f55f3b3d4baf14452a7451422
+guid: 45ab275aec165ec478093659d108e1bf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6049605792901559095
-    second: Water_0
+      213: -8201345901897133338
+    second: WaterSmall_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,8 +51,8 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 122, z: 0, w: 123}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_0
+      name: WaterSmall_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 19
-        width: 1043
-        height: 1109
+        x: 4
+        y: 72
+        width: 250
+        height: 184
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 52, z: 0, w: 118}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 733fa0d9a6484f350800000000000000
-      internalID: 6049605792901559095
+      spriteID: 6e2d055da57fe2e80800000000000000
+      internalID: -8201345901897133338
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Water_0: 6049605792901559095
+      WaterSmall_0: -8201345901897133338
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

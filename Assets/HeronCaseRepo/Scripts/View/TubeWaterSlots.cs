@@ -154,8 +154,8 @@ public sealed class TubeWaterSlots
         return water;
     }
 
-    private float SegHeight(int count) => count * _settings.WaterSlotHeight;
+    private float SegHeight(int count) => count * _settings.WaterSlotHeight + _settings.WaterSegmentOverlap;
 
     private float SegCenterY(int baseSlot, int count) =>
-        (baseSlot + count * 0.5f) * _settings.WaterSlotHeight;
+        (baseSlot + count * 0.5f) * _settings.WaterSlotHeight + _settings.WaterSegmentOverlap * 0.5f;
 }
