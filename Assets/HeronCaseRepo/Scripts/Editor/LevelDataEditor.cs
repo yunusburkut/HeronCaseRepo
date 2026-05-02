@@ -91,6 +91,25 @@ public class LevelDataEditor : Editor
 
             EditorGUI.indentLevel++;
 
+            var newModifierTube = (TubeModifier)EditorGUILayout.EnumPopup("Tube Modifier", tube.modifier);
+            if (newModifierTube != tube.modifier)
+            {
+                Undo.RecordObject(levelData, "Change Tube Modifier");
+                tube.modifier = newModifierTube;
+                EditorUtility.SetDirty(levelData);
+            }
+
+            if (tube.modifier == TubeModifier.Cloak)
+            {
+                var newTrigger = (WaterColor)EditorGUILayout.EnumPopup("Cloak Trigger Color", tube.cloakTriggerColor);
+                if (newTrigger != tube.cloakTriggerColor)
+                {
+                    Undo.RecordObject(levelData, "Change Cloak Trigger Color");
+                    tube.cloakTriggerColor = newTrigger;
+                    EditorUtility.SetDirty(levelData);
+                }
+            }
+
             for (var j = tube.waters.Count - 1; j >= 0; j--)
             {
                 var entry = tube.waters[j];

@@ -13,7 +13,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RectTransform waterRect;
     [SerializeField] private SpriteRenderer lineRenderer;
     [SerializeField] private ParticleSystem fillVFX;
-
+    [SerializeField] private SpriteRenderer cloakRenderer;
+    
     [Header("Settings")]
     [SerializeField] private GameSettings settings;
     [SerializeField] private int defaultCapacity = 3;
@@ -32,6 +33,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private TweenScope _scope;
     private TubeAnimController _anim;
+    private Color _cloakTriggerColor;
+    private bool _isCloaked;
 
     public bool IsFull => _waterSlots.IsFull;
 
@@ -67,6 +70,10 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void OnDestroy()
     {
         _scope.KillAll();
+        if (_isCloaked)
+        {
+            EventBus<TubeSolvedEvent>.Unsubscribe(OnTubeSolved);
+        }
     }
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
@@ -84,6 +91,33 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         }
 
         _waterSlots.RevealTopWater();
+
+        if (data.modifier == TubeModifier.Cloak)
+        {
+            _isCloaked = true;
+            _cloakTriggerColor = palette.Get(data.cloakTriggerColor);
+            cloakRenderer.color = _cloakTriggerColor;
+            cloakRenderer.enabled = true;
+            tubeCollider.enabled = false;
+            EventBus<TubeSolvedEvent>.Subscribe(OnTubeSolved);
+        }
+        else
+        {
+            cloakRenderer.enabled = false;
+        }
+    }
+
+    private void OnTubeSolved(TubeSolvedEvent e)
+    {
+        if (e.SolvedColor != _cloakTriggerColor)
+        {
+            return;
+        }
+        
+        _isCloaked = false;
+        EventBus<TubeSolvedEvent>.Unsubscribe(OnTubeSolved);
+        cloakRenderer.enabled = false;
+        tubeCollider.enabled = true;
     }
 
     private void DoTransferWater()
@@ -154,6 +188,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         IsSolved = true;
         tubeCollider.enabled = false;
+        EventBus<TubeSolvedEvent>.Publish(new TubeSolvedEvent { SolvedColor = TopColor });
 
         var waterDelay = Mathf.Max(0f, _waterSlots.FillAnimEndTime - Time.time);
 
@@ -219,6 +254,10 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         var size = tubeRenderer.size;
         tubeRenderer.size = new Vector2(size.x, size.y + extraHeight);
 
+        
+        var cloakSize = cloakRenderer.size;
+        cloakRenderer.size = new Vector2(cloakSize.x, cloakSize.y + extraHeight);
+        
         tubeCollider.size = new Vector2(tubeCollider.size.x, tubeCollider.size.y + extraHeight);
         tubeCollider.offset = new Vector2(tubeCollider.offset.x, tubeCollider.offset.y + extraHeight * 0.5f);
 

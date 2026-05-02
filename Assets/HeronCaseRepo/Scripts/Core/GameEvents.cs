@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public struct LevelCompletedEvent { }
 
 public struct PourAnimationCompletedEvent
@@ -20,4 +22,9 @@ public struct TubeClickedEvent
 public struct ShakeCompletedEvent
 {
     public TubeView Tube;
+}
+
+public struct TubeSolvedEvent
+{
+    public Color SolvedColor;
 }
