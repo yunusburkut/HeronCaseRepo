@@ -109,15 +109,38 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private void OnTubeSolved(TubeSolvedEvent e)
     {
-        if (e.SolvedColor != _cloakTriggerColor)
-        {
-            return;
-        }
-        
+        if (e.SolvedColor != _cloakTriggerColor) return;
         _isCloaked = false;
         EventBus<TubeSolvedEvent>.Unsubscribe(OnTubeSolved);
-        cloakRenderer.enabled = false;
         tubeCollider.enabled = true;
+        PlayCloakRevealAnimation();
+    }
+
+    private void PlayCloakRevealAnimation()
+    {
+        var t = cloakRenderer.transform;
+        var startLocalPos = t.localPosition;
+
+        var seq = DOTween.Sequence();
+
+        seq.Append(t.DOLocalMoveY(startLocalPos.y - 0.15f, 0.1f).SetEase(Ease.OutQuad));
+        seq.Join(t.DOScale(new Vector3(1.1f, 0.85f, 1f), 0.1f).SetEase(Ease.OutQuad));
+
+        seq.Append(t.DOScale(new Vector3(0.7f, 1.4f, 1f), 0.08f).SetEase(Ease.InQuad));
+
+        seq.Append(t.DOLocalMoveY(startLocalPos.y + 14f, 0.45f).SetEase(Ease.InCubic));
+        seq.Join(t.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad));
+        seq.Join(t.DORotate(new Vector3(0f, 0f, 8f), 0.45f).SetEase(Ease.InSine));
+
+        seq.OnComplete(() =>
+        {
+            cloakRenderer.enabled = false;
+            t.localPosition = startLocalPos;
+            t.localScale = Vector3.one;
+            t.localRotation = Quaternion.identity;
+        });
+
+        _scope.Add(seq);
     }
 
     private void DoTransferWater()
