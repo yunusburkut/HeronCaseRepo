@@ -113,6 +113,7 @@ public sealed class TubeAnimController
             Mathf.Max(_transform.position.y, pourWorldPos.y) + _settings.PourArcHeight,
             0f
         );
+        var pourLiftPos = new Vector3(pourWorldPos.x, pourWorldPos.y + _settings.PourLiftAmount, 0f);
 
         _pourSequence = DOTween.Sequence();
         _pourSequence.Append(_transform.DOMove(arcPeak, _settings.PourDuration * 0.45f).SetEase(Ease.OutSine));
@@ -120,7 +121,8 @@ public sealed class TubeAnimController
         _pourSequence.Append(_transform.DORotate(new Vector3(0f, 0f, signedAngle), _settings.PourDuration).SetEase(Ease.OutBack));
         _pourSequence.AppendCallback(callbacks.OnTransfer);
         _pourSequence.AppendCallback(callbacks.OnShowLine);
-        _pourSequence.AppendInterval(_settings.PourHoldDuration);
+        _pourSequence.Append(_transform.DOMove(pourLiftPos, _settings.PourHoldDuration * 0.5f).SetEase(Ease.OutSine));
+        _pourSequence.Append(_transform.DOMove(pourWorldPos, _settings.PourHoldDuration * 0.5f).SetEase(Ease.InSine));
         _pourSequence.AppendCallback(callbacks.OnHideLine);
         _pourSequence.Append(_transform.DORotate(Vector3.zero, _settings.PourDuration).SetEase(Ease.OutBack));
         _pourSequence.Append(_transform.DOMove(restWorldPos, _settings.PourDuration).SetEase(Ease.OutBack));
