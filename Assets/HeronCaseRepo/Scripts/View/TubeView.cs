@@ -32,6 +32,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private TweenScope _scope;
     private TubeAnimController _anim;
+    private Camera _mainCamera;
 
     public bool IsFull => _waterSlots.IsFull;
 
@@ -51,6 +52,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private void Awake()
     {
+        _mainCamera = Camera.main;
         _scope = new TweenScope();
         _anim = new TubeAnimController(transform, tubeHead, outlineRenderer, lineRenderer, settings, _scope);
         _cachedTransferWater = DoTransferWater;
@@ -152,8 +154,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public void PlayEnterAnimation(float delay)
     {
-        var cam = Camera.main;
-        var worldRightX = cam.transform.position.x + cam.orthographicSize * cam.aspect + 2f;
+        var worldRightX = _mainCamera.transform.position.x + _mainCamera.orthographicSize * _mainCamera.aspect + 2f;
         var localRightX = transform.parent.InverseTransformPoint(new Vector3(worldRightX, 0f, 0f)).x;
 
         transform.localPosition = new Vector3(localRightX, _restLocalPos.y, _restLocalPos.z);
@@ -194,7 +195,8 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _pourLineColor = TopColor;
 
         var restWorldPos = transform.parent.TransformPoint(_restLocalPos);
-        _anim.PlayPourInto(target, restWorldPos, _cachedTransferWater, _cachedShowPourLine, _cachedHideTargetLine, _cachedInvokePourComplete);
+        var callbacks = new PourAnimCallbacks(_cachedTransferWater, _cachedShowPourLine, _cachedHideTargetLine, _cachedInvokePourComplete);
+        _anim.PlayPourInto(target, restWorldPos, callbacks);
     }
 
     private void ShowLine(Color color)

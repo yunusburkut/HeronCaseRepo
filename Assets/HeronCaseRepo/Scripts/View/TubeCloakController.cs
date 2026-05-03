@@ -5,6 +5,7 @@ using UnityEngine;
 public class TubeCloakController : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer cloakRenderer;
+    [SerializeField] private GameSettings settings;
 
     private Color _triggerColor;
     private bool _isActive;
@@ -55,14 +56,14 @@ public class TubeCloakController : MonoBehaviour
 
         _revealSeq = DOTween.Sequence();
 
-        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y - 0.15f, 0.1f).SetEase(Ease.OutQuad));
-        _revealSeq.Join(t.DOScale(new Vector3(1.1f, 0.85f, 1f), 0.1f).SetEase(Ease.OutQuad));
+        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y - settings.CloakAnticipationDip, settings.CloakAnticipationDuration).SetEase(Ease.OutQuad));
+        _revealSeq.Join(t.DOScale(new Vector3(settings.CloakAnticipationSquashX, settings.CloakAnticipationSquashY, 1f), settings.CloakAnticipationDuration).SetEase(Ease.OutQuad));
 
-        _revealSeq.Append(t.DOScale(new Vector3(0.7f, 1.4f, 1f), 0.08f).SetEase(Ease.InQuad));
+        _revealSeq.Append(t.DOScale(new Vector3(settings.CloakStretchX, settings.CloakStretchY, 1f), settings.CloakStretchDuration).SetEase(Ease.InQuad));
 
-        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y + 14f, 0.45f).SetEase(Ease.InCubic));
-        _revealSeq.Join(t.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad));
-        _revealSeq.Join(t.DORotate(new Vector3(0f, 0f, 8f), 0.45f).SetEase(Ease.InSine));
+        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y + settings.CloakLaunchHeight, settings.CloakLaunchDuration).SetEase(Ease.InCubic));
+        _revealSeq.Join(t.DOScale(Vector3.one, settings.CloakScaleReturnDuration).SetEase(Ease.OutQuad));
+        _revealSeq.Join(t.DORotate(new Vector3(0f, 0f, settings.CloakRotation), settings.CloakLaunchDuration).SetEase(Ease.InSine));
 
         _revealSeq.OnComplete(() =>
         {

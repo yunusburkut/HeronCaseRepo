@@ -89,33 +89,15 @@ public sealed class TubeAnimController
         return _solvedTween;
     }
 
-    public void PlayPourInto(TubeView target, Vector3 restWorldPos, TweenCallback onTransfer, TweenCallback onShowLine, TweenCallback onHideLine, TweenCallback onComplete)
+    public void PlayPourInto(TubeView target, Vector3 restWorldPos, PourAnimCallbacks callbacks)
     {
         _selectTween?.Kill(false);
         _shakeTween?.Kill(false);
         _pourSequence?.Kill(false);
 
         var isLeft = _transform.position.x < target.transform.position.x;
-
-        float signedOffsetX;
-        if (isLeft)
-        {
-            signedOffsetX = -_settings.PourOffsetX;
-        }
-        else
-        {
-            signedOffsetX = _settings.PourOffsetX;
-        }
-
-        float signedAngle;
-        if (isLeft)
-        {
-            signedAngle = -_settings.PourAngle;
-        }
-        else
-        {
-            signedAngle = _settings.PourAngle;
-        }
+        var signedOffsetX = isLeft ? -_settings.PourOffsetX : _settings.PourOffsetX;
+        var signedAngle = isLeft ? -_settings.PourAngle : _settings.PourAngle;
 
         var pourWorldPos = new Vector3(
             target.HeadWorldPos.x + signedOffsetX,
@@ -132,13 +114,13 @@ public sealed class TubeAnimController
         _pourSequence.Append(_transform.DOMove(arcPeak, _settings.PourDuration * 0.45f).SetEase(Ease.OutSine));
         _pourSequence.Append(_transform.DOMove(pourWorldPos, _settings.PourDuration * 0.55f).SetEase(Ease.InSine));
         _pourSequence.Append(_transform.DORotate(new Vector3(0f, 0f, signedAngle), _settings.PourDuration).SetEase(Ease.OutBack));
-        _pourSequence.AppendCallback(onTransfer);
-        _pourSequence.AppendCallback(onShowLine);
+        _pourSequence.AppendCallback(callbacks.OnTransfer);
+        _pourSequence.AppendCallback(callbacks.OnShowLine);
         _pourSequence.AppendInterval(_settings.PourHoldDuration);
-        _pourSequence.AppendCallback(onHideLine);
+        _pourSequence.AppendCallback(callbacks.OnHideLine);
         _pourSequence.Append(_transform.DORotate(Vector3.zero, _settings.PourDuration).SetEase(Ease.OutBack));
         _pourSequence.Append(_transform.DOMove(restWorldPos, _settings.PourDuration).SetEase(Ease.OutBack));
-        _pourSequence.OnComplete(onComplete);
+        _pourSequence.OnComplete(callbacks.OnComplete);
 
         _scope.Add(_pourSequence);
     }

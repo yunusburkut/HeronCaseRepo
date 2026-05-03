@@ -42,216 +42,58 @@ public class GameSettings : ScriptableObject
     [SerializeField] private float _enterDuration = 0.6f;
     [SerializeField] private float _enterStaggerDelay = 0.08f;
 
+    [Header("Cloak Animation")]
+    [SerializeField] private float _cloakAnticipationDip = 0.15f;
+    [SerializeField] private float _cloakAnticipationDuration = 0.1f;
+    [SerializeField] private float _cloakAnticipationSquashX = 1.1f;
+    [SerializeField] private float _cloakAnticipationSquashY = 0.85f;
+    [SerializeField] private float _cloakStretchDuration = 0.08f;
+    [SerializeField] private float _cloakStretchX = 0.7f;
+    [SerializeField] private float _cloakStretchY = 1.4f;
+    [SerializeField] private float _cloakLaunchHeight = 14f;
+    [SerializeField] private float _cloakLaunchDuration = 0.45f;
+    [SerializeField] private float _cloakScaleReturnDuration = 0.3f;
+    [SerializeField] private float _cloakRotation = 8f;
+
     [Header("Game")]
     [SerializeField, FormerlySerializedAs("queuedPourSpeedMultiplier")] private float _queuedPourSpeedMultiplier = 1.75f;
 
-    public float WaterSlotHeight
-    {
-        get
-        {
-            return _waterSlotHeight;
-        }
-    }
-
+    public float WaterSlotHeight => _waterSlotHeight;
     public float WaterSegmentOverlap => _waterSegmentOverlap;
-
-    public float WaterYStackOffset
-    {
-        get
-        {
-            return _waterYStackOffset;
-        }
-    }
-
-    public float WaterRevealDuration
-    {
-        get
-        {
-            return _waterRevealDuration;
-        }
-    }
-
-    public Color OutlineColor
-    {
-        get
-        {
-            return _outlineColor;
-        }
-    }
-
-    public float OutlineThickness
-    {
-        get
-        {
-            return _outlineThickness;
-        }
-    }
-
-    public float LiftAmount
-    {
-        get
-        {
-            return _liftAmount;
-        }
-    }
-
-    public float LiftDuration
-    {
-        get
-        {
-            return _liftDuration;
-        }
-    }
-
-    public float AnticipationDip
-    {
-        get
-        {
-            return _anticipationDip;
-        }
-    }
-
-    public float AnticipationDuration
-    {
-        get
-        {
-            return _anticipationDuration;
-        }
-    }
-
-    public float PourOffsetX
-    {
-        get
-        {
-            return _pourOffsetX;
-        }
-    }
-
-    public float PourAngle
-    {
-        get
-        {
-            return _pourAngle;
-        }
-    }
-
-    public float PourDuration
-    {
-        get
-        {
-            return _pourDuration;
-        }
-    }
-
-    public float PourHeightOffset
-    {
-        get
-        {
-            return _pourHeightOffset;
-        }
-    }
-
-    public float PourHoldDuration
-    {
-        get
-        {
-            return _pourHoldDuration;
-        }
-    }
-
-    public float PourArcHeight
-    {
-        get
-        {
-            return _pourArcHeight;
-        }
-    }
-
-    public float ShakeMagnitude
-    {
-        get
-        {
-            return _shakeMagnitude;
-        }
-    }
-
-    public float ShakeDuration
-    {
-        get
-        {
-            return _shakeDuration;
-        }
-    }
-
-    public float ShakeDecay1
-    {
-        get
-        {
-            return _shakeDecay1;
-        }
-    }
-
-    public float ShakeDecay2
-    {
-        get
-        {
-            return _shakeDecay2;
-        }
-    }
-
-    public float SolvedSquashX
-    {
-        get
-        {
-            return _solvedSquashX;
-        }
-    }
-
-    public float SolvedSquashY
-    {
-        get
-        {
-            return _solvedSquashY;
-        }
-    }
-
-    public float SolvedSquashDuration
-    {
-        get
-        {
-            return _solvedSquashDuration;
-        }
-    }
-
-    public float SolvedBounceDuration
-    {
-        get
-        {
-            return _solvedBounceDuration;
-        }
-    }
-
-    public float QueuedPourSpeedMultiplier
-    {
-        get
-        {
-            return _queuedPourSpeedMultiplier;
-        }
-    }
-
-    public float EnterDuration
-    {
-        get
-        {
-            return _enterDuration;
-        }
-    }
-
-    public float EnterStaggerDelay
-    {
-        get
-        {
-            return _enterStaggerDelay;
-        }
-    }
+    public float WaterYStackOffset => _waterYStackOffset;
+    public float WaterRevealDuration => _waterRevealDuration;
+    public Color OutlineColor => _outlineColor;
+    public float OutlineThickness => _outlineThickness;
+    public float LiftAmount => _liftAmount;
+    public float LiftDuration => _liftDuration;
+    public float AnticipationDip => _anticipationDip;
+    public float AnticipationDuration => _anticipationDuration;
+    public float PourOffsetX => _pourOffsetX;
+    public float PourAngle => _pourAngle;
+    public float PourDuration => _pourDuration;
+    public float PourHeightOffset => _pourHeightOffset;
+    public float PourHoldDuration => _pourHoldDuration;
+    public float PourArcHeight => _pourArcHeight;
+    public float ShakeMagnitude => _shakeMagnitude;
+    public float ShakeDuration => _shakeDuration;
+    public float ShakeDecay1 => _shakeDecay1;
+    public float ShakeDecay2 => _shakeDecay2;
+    public float SolvedSquashX => _solvedSquashX;
+    public float SolvedSquashY => _solvedSquashY;
+    public float SolvedSquashDuration => _solvedSquashDuration;
+    public float SolvedBounceDuration => _solvedBounceDuration;
+    public float EnterDuration => _enterDuration;
+    public float EnterStaggerDelay => _enterStaggerDelay;
+    public float CloakAnticipationDip => _cloakAnticipationDip;
+    public float CloakAnticipationDuration => _cloakAnticipationDuration;
+    public float CloakAnticipationSquashX => _cloakAnticipationSquashX;
+    public float CloakAnticipationSquashY => _cloakAnticipationSquashY;
+    public float CloakStretchDuration => _cloakStretchDuration;
+    public float CloakStretchX => _cloakStretchX;
+    public float CloakStretchY => _cloakStretchY;
+    public float CloakLaunchHeight => _cloakLaunchHeight;
+    public float CloakLaunchDuration => _cloakLaunchDuration;
+    public float CloakScaleReturnDuration => _cloakScaleReturnDuration;
+    public float CloakRotation => _cloakRotation;
+    public float QueuedPourSpeedMultiplier => _queuedPourSpeedMultiplier;
 }

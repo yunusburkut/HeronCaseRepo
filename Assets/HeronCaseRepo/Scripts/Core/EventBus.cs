@@ -6,6 +6,7 @@ public static class EventBus<T>
 
     public static void Subscribe(Action<T> handler)
     {
+        _handlers -= handler;
         _handlers += handler;
     }
 

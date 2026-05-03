@@ -14,6 +14,7 @@ public sealed class TubeWaterSlots
     }
 
     private readonly List<WaterSegment> _segments = new List<WaterSegment>();
+    private readonly HashSet<Color> _colorSet = new HashSet<Color>();
     private readonly Transform _waterContainer;
     private readonly WaterView _waterPrefab;
     private readonly GameSettings _settings;
@@ -38,14 +39,7 @@ public sealed class TubeWaterSlots
         _capacity = capacity;
     }
 
-    public bool HasColor(Color color)
-    {
-        for (var i = 0; i < _segments.Count; i++)
-        {
-            if (_segments[i].Color == color) return true;
-        }
-        return false;
-    }
+    public bool HasColor(Color color) => _colorSet.Contains(color);
 
     public void SpawnWater(Color color, int slotIndex, bool isHidden = false, bool animate = false, float animDelay = 0f)
     {
@@ -80,6 +74,7 @@ public sealed class TubeWaterSlots
             seg.View.AnimateHeightTo(SegHeight(1), SegCenterY(slotIndex, 1), _settings.WaterRevealDuration, animDelay);
         }
 
+        _colorSet.Add(color);
         _segments.Add(seg);
     }
 
@@ -104,6 +99,7 @@ public sealed class TubeWaterSlots
         seg.View.SetHeight(0f);
         seg.View.transform.localPosition = new Vector3(0f, SegCenterY(slotIndex, 0), 0f);
         seg.View.AnimateHeightTo(SegHeight(count), SegCenterY(slotIndex, count), totalDuration);
+        _colorSet.Add(color);
         _segments.Add(seg);
     }
 
@@ -122,6 +118,7 @@ public sealed class TubeWaterSlots
         }
         else
         {
+            _colorSet.Remove(top.Color);
             _segments.RemoveAt(_segments.Count - 1);
             top.View.AnimateHeightTo(0f, SegCenterY(top.BaseSlot, 0), totalDuration)
                 .OnComplete(top.View.CachedDestroySelf);

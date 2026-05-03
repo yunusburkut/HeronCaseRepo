@@ -12,6 +12,11 @@ public class GameBootstrapper : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Assert(gameController != null, "[GameBootstrapper] gameController is not assigned.");
+        Debug.Assert(levelController != null, "[GameBootstrapper] levelController is not assigned.");
+        Debug.Assert(inputController != null, "[GameBootstrapper] inputController is not assigned.");
+        Debug.Assert(flowController != null, "[GameBootstrapper] flowController is not assigned.");
+
         _winChecker = new WinConditionChecker();
 
         levelController.Initialize(gameController, _winChecker);

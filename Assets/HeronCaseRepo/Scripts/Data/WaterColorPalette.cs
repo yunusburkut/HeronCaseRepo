@@ -24,11 +24,12 @@ public class WaterColorPalette : ScriptableObject
 
     public Color Get(WaterColor colorId)
     {
-        if (_lookup.TryGetValue(colorId, out var color))
-        {
-            return color;
-        }
+        if (_lookup == null) BuildLookup();
 
+        if (_lookup.TryGetValue(colorId, out var color))
+            return color;
+
+        Debug.LogWarning($"[WaterColorPalette] Color '{colorId}' not found in palette.");
         return Color.magenta;
     }
 
