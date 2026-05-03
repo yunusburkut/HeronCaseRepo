@@ -129,6 +129,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _isSelected = selected;
         _anim.PlaySelect(selected);
+        if (selected) HapticService.PlaySelect();
     }
 
     public void Shake()
@@ -168,6 +169,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         IsSolved = true;
         tubeCollider.enabled = false;
         EventBus<TubeSolvedEvent>.Publish(new TubeSolvedEvent { SolvedColor = TopColor });
+        HapticService.PlayWin();
 
         var waterDelay = Mathf.Max(0f, _waterSlots.FillAnimEndTime - Time.time);
 
