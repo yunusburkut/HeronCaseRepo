@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class GameBootstrapper : MonoBehaviour
@@ -8,10 +9,19 @@ public class GameBootstrapper : MonoBehaviour
     [SerializeField] private InputController inputController;
     [SerializeField] private FlowController flowController;
 
+    [Header("Performance")]
+    [SerializeField] private int targetFrameRate = 60;
+
     private WinConditionChecker _winChecker;
 
     private void Awake()
     {
+        Application.targetFrameRate = targetFrameRate;
+        QualitySettings.vSyncCount = 0;
+
+        DOTween.Init(recycleAllByDefault: true, useSafeMode: false)
+               .SetCapacity(200, 50);
+
         Debug.Assert(gameController != null, "[GameBootstrapper] gameController is not assigned.");
         Debug.Assert(levelController != null, "[GameBootstrapper] levelController is not assigned.");
         Debug.Assert(inputController != null, "[GameBootstrapper] inputController is not assigned.");
