@@ -5326,6 +5326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TubeCloakController
   cloakRenderer: {fileID: 716428685727255690}
+  settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
 --- !u!212 &716428685727255690
 SpriteRenderer:
   serializedVersion: 2

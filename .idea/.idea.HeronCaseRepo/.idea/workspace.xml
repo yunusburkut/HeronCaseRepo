@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Prefabs/TubePrefab.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Prefabs/TubePrefab.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
-    </list>
+    <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,6 +31,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/35/41a1bf77/Color.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/6e/ebbf859e/RuntimeInitializeOnLoadMethodAttribute.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/63bb50fab3ed4848b7f15ef3cb2c182e214600/dd/ae691366/Object.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f713e1c3c5f545ce9b1df47230f4f85346ae00/67/2174f73e/NullReferenceException.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/WaterShader/Assets/NewUnlitUniversalRenderPipelineShader.shader" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="McpProjectServerCommands">
