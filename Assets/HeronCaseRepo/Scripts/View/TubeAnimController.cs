@@ -99,9 +99,13 @@ public sealed class TubeAnimController
         var signedOffsetX = isLeft ? -_settings.PourOffsetX : _settings.PourOffsetX;
         var signedAngle = isLeft ? -_settings.PourAngle : _settings.PourAngle;
 
+        // World-space offset from tube pivot to head — correct under any scale or capacity.
+        var headOffsetX = _tubeHead.position.x - _transform.position.x;
+        var headOffsetY = _tubeHead.position.y - _transform.position.y;
+
         var pourWorldPos = new Vector3(
-            target.HeadWorldPos.x + signedOffsetX,
-            target.HeadWorldPos.y - _tubeHead.localPosition.y + _settings.PourHeightOffset,
+            target.HeadWorldPos.x + signedOffsetX - headOffsetX,
+            target.HeadWorldPos.y - headOffsetY + _settings.PourHeightOffset,
             0f
         );
         var arcPeak = new Vector3(

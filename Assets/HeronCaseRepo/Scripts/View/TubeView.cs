@@ -243,6 +243,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         waterContainer.localPosition -= new Vector3(0f, extraHeight * 0.5f, 0f);
 
         transform.localPosition -= new Vector3(0f, extraHeight * 0.5f, 0f);
+        tubeHead.localPosition += new Vector3(0f, extraHeight * 0.5f, 0f);
 
         var lt = lineRenderer.transform;
         lt.localScale = new Vector3(lt.localScale.x, tubeRenderer.size.y, lt.localScale.z);
