@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HeronCaseRepo.Scripts.Data.LevelData
   _tubeCapacity: 5
   _emptyTubeCount: 2
-  _colors: 00000000010000000200000003000000050000000400000005000000060000000700000008000000
+  _colors: 00000000010000000200000003000000050000000400000009000000060000000700000008000000
   _seed: 0
   _tubes:
   - capacity: 5

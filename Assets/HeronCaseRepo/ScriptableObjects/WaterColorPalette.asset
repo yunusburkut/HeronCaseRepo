@@ -31,3 +31,5 @@ MonoBehaviour:
     color: {r: 1, g: 0, b: 0.85638034, a: 1}
   - colorId: 8
     color: {r: 0.3490566, g: 0.22899593, b: 0.13995194, a: 1}
+  - colorId: 9
+    color: {r: 1, g: 1, b: 1, a: 1}
