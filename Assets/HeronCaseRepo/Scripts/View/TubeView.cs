@@ -13,8 +13,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RectTransform waterRect;
     [SerializeField] private SpriteRenderer lineRenderer;
     [SerializeField] private ParticleSystem fillVFX;
-    [SerializeField] private SpriteRenderer cloakRenderer;
-    
+
     [Header("Settings")]
     [SerializeField] private GameSettings settings;
     [SerializeField] private int defaultCapacity = 3;
@@ -33,8 +32,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     private TweenScope _scope;
     private TubeAnimController _anim;
-    private Color _cloakTriggerColor;
-    private bool _isCloaked;
 
     public bool IsFull => _waterSlots.IsFull;
 
@@ -56,7 +53,6 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     {
         _scope = new TweenScope();
         _anim = new TubeAnimController(transform, tubeHead, outlineRenderer, lineRenderer, settings, _scope);
-
         _cachedTransferWater = DoTransferWater;
         _cachedInvokePourComplete = InvokePourComplete;
         _cachedInvokeShakeComplete = InvokeShakeComplete;
@@ -70,17 +66,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void OnDestroy()
     {
         _scope.KillAll();
-        if (_isCloaked)
-        {
-            EventBus<TubeSolvedEvent>.Unsubscribe(OnTubeSolved);
-        }
     }
 
     public void Init(TubeData data, WaterView waterPrefab, WaterColorPalette palette)
     {
         _waterSlots = new TubeWaterSlots(waterContainer, waterPrefab, settings, data.capacity);
 
-        ResizeTube(data.capacity);
+        var extraHeight = ResizeTube(data.capacity);
         _restLocalPos = transform.localPosition;
         _anim.SetRestLocalPos(_restLocalPos);
 
@@ -94,53 +86,16 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         if (data.modifier == TubeModifier.Cloak)
         {
-            _isCloaked = true;
-            _cloakTriggerColor = palette.Get(data.cloakTriggerColor);
-            cloakRenderer.color = _cloakTriggerColor;
-            cloakRenderer.enabled = true;
             tubeCollider.enabled = false;
-            EventBus<TubeSolvedEvent>.Subscribe(OnTubeSolved);
-        }
-        else
-        {
-            cloakRenderer.enabled = false;
+            var ctrl = GetComponentInChildren<TubeCloakController>();
+            ctrl.Resize(extraHeight);
+            ctrl.Activate(palette.Get(data.cloakTriggerColor), OnCloakLifted);
         }
     }
 
-    private void OnTubeSolved(TubeSolvedEvent e)
+    private void OnCloakLifted()
     {
-        if (e.SolvedColor != _cloakTriggerColor) return;
-        _isCloaked = false;
-        EventBus<TubeSolvedEvent>.Unsubscribe(OnTubeSolved);
         tubeCollider.enabled = true;
-        PlayCloakRevealAnimation();
-    }
-
-    private void PlayCloakRevealAnimation()
-    {
-        var t = cloakRenderer.transform;
-        var startLocalPos = t.localPosition;
-
-        var seq = DOTween.Sequence();
-
-        seq.Append(t.DOLocalMoveY(startLocalPos.y - 0.15f, 0.1f).SetEase(Ease.OutQuad));
-        seq.Join(t.DOScale(new Vector3(1.1f, 0.85f, 1f), 0.1f).SetEase(Ease.OutQuad));
-
-        seq.Append(t.DOScale(new Vector3(0.7f, 1.4f, 1f), 0.08f).SetEase(Ease.InQuad));
-
-        seq.Append(t.DOLocalMoveY(startLocalPos.y + 14f, 0.45f).SetEase(Ease.InCubic));
-        seq.Join(t.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad));
-        seq.Join(t.DORotate(new Vector3(0f, 0f, 8f), 0.45f).SetEase(Ease.InSine));
-
-        seq.OnComplete(() =>
-        {
-            cloakRenderer.enabled = false;
-            t.localPosition = startLocalPos;
-            t.localScale = Vector3.one;
-            t.localRotation = Quaternion.identity;
-        });
-
-        _scope.Add(seq);
     }
 
     private void DoTransferWater()
@@ -270,17 +225,13 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         target._waterSlots.AddWaters(color, toMove);
     }
 
-    private void ResizeTube(int capacity)
+    private float ResizeTube(int capacity)
     {
         var extraHeight = (capacity - defaultCapacity) * settings.WaterSlotHeight;
 
         var size = tubeRenderer.size;
         tubeRenderer.size = new Vector2(size.x, size.y + extraHeight);
 
-        
-        var cloakSize = cloakRenderer.size;
-        cloakRenderer.size = new Vector2(cloakSize.x, cloakSize.y + extraHeight);
-        
         tubeCollider.size = new Vector2(tubeCollider.size.x, tubeCollider.size.y + extraHeight);
         tubeCollider.offset = new Vector2(tubeCollider.offset.x, tubeCollider.offset.y + extraHeight * 0.5f);
 
@@ -294,5 +245,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
         var t = settings.OutlineThickness;
         outlineRenderer.size = new Vector2(tubeRenderer.size.x + t * 2f, tubeRenderer.size.y + t * 2f);
+
+        return extraHeight;
     }
 }

@@ -200,7 +200,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -253,7 +253,6 @@ MonoBehaviour:
   waterRect: {fileID: 7230341967060609584}
   lineRenderer: {fileID: 3661563078680745577}
   fillVFX: {fileID: 2182620069612095651}
-  cloakRenderer: {fileID: 6817248355913681638}
   settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
   defaultCapacity: 3
 --- !u!61 &6305860227426178007
@@ -5290,7 +5289,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2986810110406955683}
-  - component: {fileID: 6817248355913681638}
+  - component: {fileID: 4686012390807751833}
+  - component: {fileID: 716428685727255690}
   m_Layer: 0
   m_Name: Cloak
   m_TagString: Untagged
@@ -5313,7 +5313,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3646707218559663874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &6817248355913681638
+--- !u!114 &4686012390807751833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8145143701538921432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 426f7f8324ec2a54489ee1b39a6a155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TubeCloakController
+  cloakRenderer: {fileID: 716428685727255690}
+--- !u!212 &716428685727255690
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -5321,7 +5334,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8145143701538921432}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -5339,7 +5352,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5367,7 +5380,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 3, y: 6}
+  m_Size: {x: 3, y: 5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
