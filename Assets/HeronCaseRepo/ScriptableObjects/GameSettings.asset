@@ -22,7 +22,7 @@ MonoBehaviour:
   _liftDuration: 0.1
   _anticipationDip: 0.2
   _anticipationDuration: 0.06
-  _pourOffsetX: 2.5
+  _pourOffsetX: 2
   _pourAngle: 120
   _pourDuration: 0.15
   _pourHeightOffset: 5
@@ -38,4 +38,15 @@ MonoBehaviour:
   _solvedBounceDuration: 0.5
   _enterDuration: 0.6
   _enterStaggerDelay: 0.08
+  _cloakAnticipationDip: 0.15
+  _cloakAnticipationDuration: 0.1
+  _cloakAnticipationSquashX: 1.1
+  _cloakAnticipationSquashY: 0.85
+  _cloakStretchDuration: 0.08
+  _cloakStretchX: 0.7
+  _cloakStretchY: 1.4
+  _cloakLaunchHeight: 14
+  _cloakLaunchDuration: 0.45
+  _cloakScaleReturnDuration: 0.3
+  _cloakRotation: 8
   _queuedPourSpeedMultiplier: 1.75
