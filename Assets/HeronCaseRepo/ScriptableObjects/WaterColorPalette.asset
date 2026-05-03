@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 761a0b8aee352104290a8cf5918c7c15, type: 3}
   m_Name: WaterColorPalette
   m_EditorClassIdentifier: Assembly-CSharp::HeronCaseRepo.Scripts.Data.WaterColorPalette
-  entries:
+  _entries:
   - colorId: 0
     color: {r: 1, g: 0, b: 0, a: 1}
   - colorId: 1
@@ -21,3 +21,13 @@ MonoBehaviour:
     color: {r: 0, g: 1, b: 0.07855159, a: 1}
   - colorId: 3
     color: {r: 1, g: 0.99437773, b: 0, a: 1}
+  - colorId: 4
+    color: {r: 1, g: 0.542188, b: 0, a: 1}
+  - colorId: 5
+    color: {r: 0.6513127, g: 0, b: 1, a: 1}
+  - colorId: 6
+    color: {r: 0, g: 1, b: 0.9813692, a: 1}
+  - colorId: 7
+    color: {r: 1, g: 0, b: 0.85638034, a: 1}
+  - colorId: 8
+    color: {r: 0.3490566, g: 0.22899593, b: 0.13995194, a: 1}

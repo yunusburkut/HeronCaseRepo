@@ -13,6 +13,8 @@ public class LevelController : MonoBehaviour
 
     [Header("Layout")]
     [SerializeField] private float tubeSpacing = 1.5f;
+    [SerializeField] private float rowSpacing = 10f;
+    [SerializeField] private int tubesPerRow = 4;
     [SerializeField] private Transform tubesContainer;
     [SerializeField] private GameSettings settings;
 
@@ -45,19 +47,34 @@ public class LevelController : MonoBehaviour
     private void SpawnLevel(List<TubeData> tubeDataList)
     {
         var count = tubeDataList.Count;
-        var startX = -(count - 1) * tubeSpacing * 0.5f;
+        var rowCount = Mathf.CeilToInt((float)count / tubesPerRow);
+        var animIndex = 0;
 
-        for (var i = 0; i < count; i++)
+        var cam = Camera.main;
+        var camPos = cam.transform.position;
+        var layoutOriginY = camPos.y + (rowCount - 1) * rowSpacing * 0.5f;
+
+        for (var row = 0; row < rowCount; row++)
         {
-            var pos = new Vector3(startX + i * tubeSpacing, 0f, 0f);
-            var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
-            tubeView.name = $"Tube_{i}";
-            tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
-            tubeView.PlayEnterAnimation(i * settings.EnterStaggerDelay);
-            _tubeViews.Add(tubeView);
+            var rowStart = row * tubesPerRow;
+            var rowSize = Mathf.Min(tubesPerRow, count - rowStart);
+            var startX = camPos.x - (rowSize - 1) * tubeSpacing * 0.5f;
+            var y = layoutOriginY - row * rowSpacing;
+
+            for (var col = 0; col < rowSize; col++)
+            {
+                var i = rowStart + col;
+                var pos = new Vector3(startX + col * tubeSpacing, y, 0);
+                var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
+                tubeView.name = $"Tube_{i}";
+                tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
+                tubeView.PlayEnterAnimation(animIndex * settings.EnterStaggerDelay);
+                _tubeViews.Add(tubeView);
+                animIndex++;
+            }
         }
 
         _levelController.Initialize(_tubeViews);
-        _winChecker.Initialize(_tubeViews);//todo change this 
+        _winChecker.Initialize(_tubeViews);
     }
 }

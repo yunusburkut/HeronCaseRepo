@@ -442,7 +442,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -876,6 +876,8 @@ MonoBehaviour:
   tubePrefab: {fileID: 7744950984478287689, guid: b54809afd35529f40b937434224be165, type: 3}
   waterPrefab: {fileID: 3028682428878221589, guid: 546f139844efaaa4fa6bad835de68daa, type: 3}
   tubeSpacing: 3
+  rowSpacing: 10
+  tubesPerRow: 4
   tubesContainer: {fileID: 1450535832}
   settings: {fileID: 11400000, guid: a7f20922a1f3e1840b6fdc4738dca336, type: 2}
 --- !u!114 &1450535831
