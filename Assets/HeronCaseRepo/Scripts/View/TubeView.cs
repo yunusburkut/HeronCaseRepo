@@ -46,9 +46,9 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
 
     public Vector3 HeadWorldPos => tubeHead.position;
 
-    private int AvailableSlots => _waterSlots.AvailableSlots;
+    public int AvailableSlots => _waterSlots.AvailableSlots;
 
-    private int TopColorCount => _waterSlots.TopColorCount;
+    public int TopColorCount => _waterSlots.TopColorCount;
 
     private void Awake()
     {

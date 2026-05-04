@@ -28,3 +28,5 @@ public struct TubeSolvedEvent
 {
     public Color SolvedColor;
 }
+
+public struct DeadlockEvent { }

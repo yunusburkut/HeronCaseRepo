@@ -1,4 +1,5 @@
 using DG.Tweening;
+using HeronCaseRepo.Scripts.Services;
 using UnityEngine;
 
 public class GameBootstrapper : MonoBehaviour
@@ -13,6 +14,7 @@ public class GameBootstrapper : MonoBehaviour
     [SerializeField] private int targetFrameRate = 60;
 
     private WinConditionChecker _winChecker;
+    private DeadlockChecker _deadlockChecker;
 
     private void Awake()
     {
@@ -24,8 +26,9 @@ public class GameBootstrapper : MonoBehaviour
         Debug.Assert(flowController != null, "[GameBootstrapper] flowController is not assigned.");
 
         _winChecker = new WinConditionChecker();
-
-        levelController.Initialize(gameController, _winChecker);
+        _deadlockChecker = new DeadlockChecker();
+        
+        levelController.Initialize(gameController, _winChecker, _deadlockChecker);
         flowController.Initialize(levelController);
         inputController.Initialize(flowController, gameController);
     }

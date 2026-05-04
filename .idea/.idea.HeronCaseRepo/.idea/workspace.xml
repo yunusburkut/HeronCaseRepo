@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f33356d4-c371-443d-a246-6cdaa2604ec0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/GameSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/GameSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeAnimController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeAnimController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Services/DeadlockChecker.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Services/DeadlockChecker.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HeronCaseRepo/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/GameSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/ScriptableObjects/GameSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/LevelController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameBootstrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameEvents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Core/GameEvents.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/View/TubeView.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +33,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Controller/FlowController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/LevelData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Data/TubeData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/HeronCaseRepo/Scripts/Services/DeadlockChecker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@d8a2716f3013/Runtime/TMP/TMP_PackageResourceImporter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@d8a2716f3013/Runtime/UGUI/EventSystem/EventData/PointerEventData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/569fd17d9cf9451992ce382bb65fa8d39dd600/a5/00266a74/Editor.cs" root0="FORCE_HIGHLIGHTING" />
@@ -94,13 +101,15 @@
       <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false" ignored-value-for-modified-check="10536">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="10536" />
       <option name="projectPathOnTarget" />
       <option name="runtimes">
-        <list />
+        <list>
+          <MonoRuntime />
+        </list>
       </option>
       <option name="selectedOptions">
         <list />
@@ -121,7 +130,9 @@
       <workItem from="1776991499361" duration="10462000" />
       <workItem from="1777543232822" duration="1485000" />
       <workItem from="1777571643070" duration="4501000" />
-      <workItem from="1777840510000" duration="446000" />
+      <workItem from="1777840510000" duration="1788000" />
+      <workItem from="1777853040754" duration="1829000" />
+      <workItem from="1777864899409" duration="3763000" />
     </task>
     <servers />
   </component>

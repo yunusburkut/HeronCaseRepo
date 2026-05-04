@@ -28,6 +28,8 @@ MonoBehaviour:
   _pourHeightOffset: 5
   _pourHoldDuration: 0.2
   _pourArcHeight: 1.5
+  _pourLiftAmount: 1
+  _pourLiftDuration: 0.5
   _shakeMagnitude: 0.08
   _shakeDuration: 0.04
   _shakeDecay1: 0.6

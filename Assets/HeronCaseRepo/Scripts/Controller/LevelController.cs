@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HeronCaseRepo.Scripts.Services;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour
@@ -20,13 +21,18 @@ public class LevelController : MonoBehaviour
 
     private ITubeInteractionController _levelController;
     private WinConditionChecker _winChecker;
+    private DeadlockChecker _deadlockChecker;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
 
-    public void Initialize(ITubeInteractionController levelController, WinConditionChecker winChecker)
+    public void Initialize(ITubeInteractionController levelController, WinConditionChecker winChecker, DeadlockChecker deadlockChecker)
     {
         _levelController = levelController;
         _winChecker = winChecker;
+        _deadlockChecker = deadlockChecker;
+        
+        EventBus<DeadlockEvent>.Subscribe(RestartLevel);
     }
+    
 
     public void StartLevel()
     {
@@ -42,6 +48,12 @@ public class LevelController : MonoBehaviour
         }
         
         _tubeViews.Clear();
+    }
+    
+    private void RestartLevel(DeadlockEvent e)
+    {
+        ClearLevel();
+        SpawnLevel(levelData.Tubes);
     }
 
     private void SpawnLevel(List<TubeData> tubeDataList)
@@ -76,5 +88,6 @@ public class LevelController : MonoBehaviour
 
         _levelController.Initialize(_tubeViews);
         _winChecker.Initialize(_tubeViews);
+        _deadlockChecker.Initialize(_tubeViews);
     }
 }
