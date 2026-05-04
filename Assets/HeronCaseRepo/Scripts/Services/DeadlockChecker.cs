@@ -20,6 +20,7 @@ namespace HeronCaseRepo.Scripts.Services
         
         public void Dispose()
         {
+            EventBus<PourCompletedEvent>.Unsubscribe(OnPourCompleted);
         }
 
         private void OnPourCompleted(PourCompletedEvent e)
