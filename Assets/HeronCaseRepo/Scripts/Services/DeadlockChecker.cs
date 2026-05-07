@@ -15,7 +15,7 @@ namespace HeronCaseRepo.Scripts.Services
         
         public void Initialize(List<TubeView> tubes)
         {
-            _allTubes = new List<TubeView>(tubes);
+            _allTubes = tubes;
         }
         
         public void Dispose()

@@ -11,9 +11,14 @@ public sealed class TweenScope
         {
             return tween;
         }
-        
+
+        for (var i = _active.Count - 1; i >= 0; i--)
+        {
+            if (!_active[i].IsActive())
+                _active.RemoveAt(i);
+        }
+
         _active.Add(tween);
-        tween.OnKill(() => _active.Remove(tween));
         return tween;
     }
 

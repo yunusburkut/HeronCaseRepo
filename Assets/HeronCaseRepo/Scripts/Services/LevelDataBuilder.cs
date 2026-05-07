@@ -1,52 +1,76 @@
 using System;
 using System.Collections.Generic;
-using Random = System.Random;
 
 public static class LevelDataBuilder
 {
-    public static List<TubeData> Build(LevelData data, int seedOverride = -1)
+    private static readonly List<WaterEntry> _pool = new List<WaterEntry>(64);
+    private static readonly List<TubeData> _tubePool = new List<TubeData>(16);
+    private static uint _rngState;
+
+    public static void Build(LevelData data, List<TubeData> output, int seedOverride = -1)
     {
-        var pool = BuildPool(data);
-        Shuffle(pool, seedOverride >= 0 ? seedOverride : data.Seed);
-        return DistributeIntoTubes(pool, data);
+        BuildPool(data);
+        var seed = seedOverride >= 0 ? seedOverride : data.Seed;
+        _rngState = (uint)(seed != 0 ? seed : Environment.TickCount);
+        Shuffle();
+        DistributeIntoTubes(data, output);
     }
 
-    private static List<WaterEntry> BuildPool(LevelData data)
+    private static void BuildPool(LevelData data)
     {
-        var pool = new List<WaterEntry>(data.Colors.Count * data.TubeCapacity);
-        foreach (var color in data.Colors)
+        _pool.Clear();
+        for (var c = 0; c < data.Colors.Count; c++)
         {
+            var color = data.Colors[c];
             for (var i = 0; i < data.TubeCapacity; i++)
-                pool.Add(new WaterEntry { color = color, modifier = WaterModifier.None });
+                _pool.Add(new WaterEntry { color = color, modifier = WaterModifier.None });
         }
-        return pool;
     }
 
-    private static void Shuffle(List<WaterEntry> list, int seed)
+    private static void Shuffle()
     {
-        var rng = new Random(seed != 0 ? seed : Environment.TickCount);
-        for (var i = list.Count - 1; i > 0; i--)
+        for (var i = _pool.Count - 1; i > 0; i--)
         {
-            var j = rng.Next(i + 1);
-            (list[i], list[j]) = (list[j], list[i]);
+            var j = (int)(NextRng() % (uint)(i + 1));
+            (_pool[i], _pool[j]) = (_pool[j], _pool[i]);
         }
     }
 
-    private static List<TubeData> DistributeIntoTubes(List<WaterEntry> pool, LevelData data)
+    // xorshift32 — allocation-free seeded PRNG
+    private static uint NextRng()
     {
-        var tubes = new List<TubeData>(data.Colors.Count + data.EmptyTubeCount);
+        _rngState ^= _rngState << 13;
+        _rngState ^= _rngState >> 17;
+        _rngState ^= _rngState << 5;
+        return _rngState;
+    }
+
+    private static void DistributeIntoTubes(LevelData data, List<TubeData> output)
+    {
+        output.Clear();
+        var totalTubes = data.Colors.Count + data.EmptyTubeCount;
+
+        while (_tubePool.Count < totalTubes)
+            _tubePool.Add(new TubeData());
 
         for (var i = 0; i < data.Colors.Count; i++)
         {
-            var tube = new TubeData { capacity = data.TubeCapacity };
+            var tube = _tubePool[i];
+            tube.capacity = data.TubeCapacity;
+            tube.modifier = TubeModifier.None;
+            tube.waters.Clear();
             for (var j = 0; j < data.TubeCapacity; j++)
-                tube.waters.Add(pool[i * data.TubeCapacity + j]);
-            tubes.Add(tube);
+                tube.waters.Add(_pool[i * data.TubeCapacity + j]);
+            output.Add(tube);
         }
 
         for (var i = 0; i < data.EmptyTubeCount; i++)
-            tubes.Add(new TubeData { capacity = data.TubeCapacity });
-
-        return tubes;
+        {
+            var tube = _tubePool[data.Colors.Count + i];
+            tube.capacity = data.TubeCapacity;
+            tube.modifier = TubeModifier.None;
+            tube.waters.Clear();
+            output.Add(tube);
+        }
     }
 }

@@ -1,4 +1,6 @@
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 public class WaterView : MonoBehaviour
@@ -12,6 +14,10 @@ public class WaterView : MonoBehaviour
     private TweenScope _scope;
     private Tween _heightTween;
 
+    private DOGetter<float> _heightGetter;
+    private DOSetter<float> _heightSetter;
+    private DOGetter<float> _revealGetter;
+
     public TweenCallback CachedDestroySelf { get; private set; }
     public Color Color { get; private set; }
 
@@ -20,6 +26,17 @@ public class WaterView : MonoBehaviour
         _scope = new TweenScope();
         _mpb = new MaterialPropertyBlock();
         CachedDestroySelf = DestroySelf;
+        _heightGetter = GetSpriteHeight;
+        _heightSetter = SetSpriteHeight;
+        _revealGetter = () => _revealAmount;
+    }
+
+    private float GetSpriteHeight() => spriteRenderer.size.y;
+
+    private void SetSpriteHeight(float h)
+    {
+        var s = spriteRenderer.size;
+        spriteRenderer.size = new Vector2(s.x, h);
     }
 
     private void OnDestroy()
@@ -71,10 +88,7 @@ public class WaterView : MonoBehaviour
             seq.AppendInterval(delay);
         }
         
-        seq.Append(DOTween.To(
-            () => spriteRenderer.size.y,
-            h => { var s = spriteRenderer.size; spriteRenderer.size = new Vector2(s.x, h); },
-            targetHeight, duration).SetEase(Ease.OutCubic));
+        seq.Append(DOTween.To(_heightGetter, _heightSetter, targetHeight, duration).SetEase(Ease.OutCubic));
         seq.Join(transform.DOLocalMoveY(targetCenterY, duration).SetEase(Ease.OutCubic));
         _heightTween = _scope.Add(seq);
         return _heightTween;
@@ -84,6 +98,6 @@ public class WaterView : MonoBehaviour
     {
         var ease = to > _revealAmount ? Ease.OutCubic : Ease.InCubic;
 
-        return _scope.Add(DOTween.To(() => _revealAmount, x => SetReveal(x), to, duration).SetEase(ease));
+        return _scope.Add(DOTween.To(_revealGetter, SetReveal, to, duration).SetEase(ease));
     }
 }

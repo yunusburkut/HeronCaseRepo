@@ -147,7 +147,9 @@ public sealed class TubeWaterSlots
         water.SetHeight(SegHeight(1));
         water.transform.localPosition = new Vector3(0f, SegCenterY(sortOrder, 1), 0f);
         water.SetSortingOrder(sortOrder);
+#if UNITY_EDITOR
         water.name = $"Water_{sortOrder}";
+#endif
         return water;
     }
 

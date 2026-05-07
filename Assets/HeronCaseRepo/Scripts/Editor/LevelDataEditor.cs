@@ -52,7 +52,9 @@ public class LevelDataEditor : Editor
         if (GUILayout.Button("Generate Random", GUILayout.Height(28)))
         {
             Undo.RecordObject(levelData, "Generate Random Level");
-            levelData.SetTubes(LevelDataBuilder.Build(levelData));
+            var built = new System.Collections.Generic.List<TubeData>();
+            LevelDataBuilder.Build(levelData, built);
+            levelData.SetTubes(built);
             _tubeFoldouts = new bool[levelData.Tubes.Count];
             for (var i = 0; i < _tubeFoldouts.Length; i++)
                 _tubeFoldouts[i] = true;

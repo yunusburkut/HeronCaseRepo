@@ -20,10 +20,10 @@ public class WinConditionChecker : IDisposable
 
     public void Initialize(List<TubeView> tubes)
     {
-        _allTubes = new List<TubeView>(tubes);
-        foreach (var tube in _allTubes)
+        _allTubes = tubes;
+        for (var i = 0; i < _allTubes.Count; i++)
         {
-            TryMarkSolved(tube);
+            TryMarkSolved(_allTubes[i]);
         }
     }
 
@@ -70,17 +70,11 @@ public class WinConditionChecker : IDisposable
         }
 
         var color = tube.TopColor;
-        foreach (var t in _allTubes)
+        for (var i = 0; i < _allTubes.Count; i++)
         {
-            if (t == tube || t.IsEmpty)
-            {
-                continue;
-            }
-
-            if (t.HasColor(color))
-            {
-                return null;
-            }
+            var t = _allTubes[i];
+            if (t == tube || t.IsEmpty) continue;
+            if (t.HasColor(color)) return null;
         }
 
         return tube.MarkSolved();

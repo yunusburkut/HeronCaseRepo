@@ -11,6 +11,8 @@ public class TubeCloakController : MonoBehaviour
     private bool _isActive;
     private Sequence _revealSeq;
     private Action _onLifted;
+    private Vector3 _cloakStartLocalPos;
+    private TweenCallback _cachedOnRevealComplete;
 
     public void Resize(float extraHeight)
     {
@@ -23,9 +25,19 @@ public class TubeCloakController : MonoBehaviour
         _triggerColor = triggerColor;
         _onLifted = onLifted;
         _isActive = true;
+        _cachedOnRevealComplete = OnRevealComplete;
         cloakRenderer.color = triggerColor;
         cloakRenderer.enabled = true;
         EventBus<TubeSolvedEvent>.Subscribe(OnTubeSolved);
+    }
+
+    private void OnRevealComplete()
+    {
+        cloakRenderer.enabled = false;
+        var t = cloakRenderer.transform;
+        t.localPosition = _cloakStartLocalPos;
+        t.localScale = Vector3.one;
+        t.localRotation = Quaternion.identity;
     }
 
     private void OnDestroy()
@@ -52,25 +64,19 @@ public class TubeCloakController : MonoBehaviour
     private void PlayRevealAnimation()
     {
         var t = cloakRenderer.transform;
-        var startLocalPos = t.localPosition;
+        _cloakStartLocalPos = t.localPosition;
 
         _revealSeq = DOTween.Sequence();
 
-        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y - settings.CloakAnticipationDip, settings.CloakAnticipationDuration).SetEase(Ease.OutQuad));
+        _revealSeq.Append(t.DOLocalMoveY(_cloakStartLocalPos.y - settings.CloakAnticipationDip, settings.CloakAnticipationDuration).SetEase(Ease.OutQuad));
         _revealSeq.Join(t.DOScale(new Vector3(settings.CloakAnticipationSquashX, settings.CloakAnticipationSquashY, 1f), settings.CloakAnticipationDuration).SetEase(Ease.OutQuad));
 
         _revealSeq.Append(t.DOScale(new Vector3(settings.CloakStretchX, settings.CloakStretchY, 1f), settings.CloakStretchDuration).SetEase(Ease.InQuad));
 
-        _revealSeq.Append(t.DOLocalMoveY(startLocalPos.y + settings.CloakLaunchHeight, settings.CloakLaunchDuration).SetEase(Ease.InCubic));
+        _revealSeq.Append(t.DOLocalMoveY(_cloakStartLocalPos.y + settings.CloakLaunchHeight, settings.CloakLaunchDuration).SetEase(Ease.InCubic));
         _revealSeq.Join(t.DOScale(Vector3.one, settings.CloakScaleReturnDuration).SetEase(Ease.OutQuad));
         _revealSeq.Join(t.DORotate(new Vector3(0f, 0f, settings.CloakRotation), settings.CloakLaunchDuration).SetEase(Ease.InSine));
 
-        _revealSeq.OnComplete(() =>
-        {
-            cloakRenderer.enabled = false;
-            t.localPosition = startLocalPos;
-            t.localScale = Vector3.one;
-            t.localRotation = Quaternion.identity;
-        });
+        _revealSeq.OnComplete(_cachedOnRevealComplete);
     }
 }

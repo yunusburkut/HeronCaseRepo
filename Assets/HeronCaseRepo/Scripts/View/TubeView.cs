@@ -29,6 +29,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private TweenCallback _cachedInvokeShakeComplete;
     private TweenCallback _cachedShowPourLine;
     private TweenCallback _cachedHideTargetLine;
+    private TweenCallback _cachedPlayFillVFX;
 
     private TweenScope _scope;
     private TubeAnimController _anim;
@@ -60,6 +61,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         _cachedInvokeShakeComplete = InvokeShakeComplete;
         _cachedShowPourLine = ShowPourLineOnTarget;
         _cachedHideTargetLine = HideTargetLine;
+        _cachedPlayFillVFX = PlayFillVFX;
 
         lineRenderer.color = Color.clear;
         outlineRenderer.color = Color.clear;
@@ -98,6 +100,11 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
     private void OnCloakLifted()
     {
         tubeCollider.enabled = true;
+    }
+
+    private void PlayFillVFX()
+    {
+        fillVFX.Play();
     }
 
     private void DoTransferWater()
@@ -182,10 +189,7 @@ public class TubeView : MonoBehaviour, IPointerClickHandler
         main.startColor = TopColor;
         var vfxDuration = main.duration;
 
-        _scope.Add(DOVirtual.DelayedCall(waterDelay, () =>
-        {
-            fillVFX.Play();
-        }));
+        _scope.Add(DOVirtual.DelayedCall(waterDelay, _cachedPlayFillVFX));
 
         return _anim.PlayMarkSolved(waterDelay + vfxDuration);
 

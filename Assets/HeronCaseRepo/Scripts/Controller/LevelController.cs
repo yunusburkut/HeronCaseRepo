@@ -23,6 +23,7 @@ public class LevelController : MonoBehaviour
     private WinConditionChecker _winChecker;
     private DeadlockChecker _deadlockChecker;
     private readonly List<TubeView> _tubeViews = new List<TubeView>();
+    private readonly List<TubeData> _builtTubes = new List<TubeData>();
 
     public void Initialize(ITubeInteractionController levelController, WinConditionChecker winChecker, DeadlockChecker deadlockChecker)
     {
@@ -37,16 +38,21 @@ public class LevelController : MonoBehaviour
     public void StartLevel()
     {
         ClearLevel();
-        SpawnLevel(levelData.Tubes.Count > 0 ? levelData.Tubes : LevelDataBuilder.Build(levelData, 0));
+        if (levelData.Tubes.Count > 0)
+        {
+            SpawnLevel(levelData.Tubes);
+        }
+        else
+        {
+            LevelDataBuilder.Build(levelData, _builtTubes);
+            SpawnLevel(_builtTubes);
+        }
     }
 
     public void ClearLevel()
     {
-        foreach (var tubeView in _tubeViews)
-        {
-            Destroy(tubeView.gameObject);
-        }
-        
+        for (var i = 0; i < _tubeViews.Count; i++)
+            Destroy(_tubeViews[i].gameObject);
         _tubeViews.Clear();
     }
     
@@ -78,7 +84,9 @@ public class LevelController : MonoBehaviour
                 var i = rowStart + col;
                 var pos = new Vector3(startX + col * tubeSpacing, y, 0);
                 var tubeView = Instantiate(tubePrefab, pos, Quaternion.identity, tubesContainer);
+#if UNITY_EDITOR
                 tubeView.name = $"Tube_{i}";
+#endif
                 tubeView.Init(tubeDataList[i], waterPrefab, colorPalette);
                 tubeView.PlayEnterAnimation(animIndex * settings.EnterStaggerDelay);
                 _tubeViews.Add(tubeView);

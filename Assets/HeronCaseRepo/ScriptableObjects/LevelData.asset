@@ -13,45 +13,33 @@ MonoBehaviour:
   m_Name: LevelData
   m_EditorClassIdentifier: Assembly-CSharp::HeronCaseRepo.Scripts.Data.LevelData
   _tubeCapacity: 4
-  _emptyTubeCount: 2
+  _emptyTubeCount: 1
   _colors: 00000000010000000200000003000000
   _seed: 0
   _tubes:
   - capacity: 4
-    modifier: 1
-    cloakTriggerColor: 2
-    waters:
-    - color: 0
-      modifier: 0
-    - color: 3
-      modifier: 0
-    - color: 3
-      modifier: 0
-    - color: 3
-      modifier: 0
-  - capacity: 4
     modifier: 0
     cloakTriggerColor: 0
     waters:
+    - color: 2
+      modifier: 0
     - color: 0
       modifier: 0
     - color: 2
       modifier: 0
-    - color: 0
-      modifier: 1
-    - color: 0
+    - color: 1
       modifier: 0
   - capacity: 4
     modifier: 0
     cloakTriggerColor: 0
     waters:
-    - color: 1
-      modifier: 0
-    - color: 1
-      modifier: 0
-    - color: 1
+    - color: 3
       modifier: 0
     - color: 3
+      modifier: 0
+    - color: 0
+      modifier: 0
+    - color: 2
       modifier: 0
   - capacity: 4
     modifier: 0
@@ -59,16 +47,24 @@ MonoBehaviour:
     waters:
     - color: 2
       modifier: 0
+    - color: 0
+      modifier: 0
     - color: 1
       modifier: 0
-    - color: 2
-      modifier: 0
-    - color: 2
+    - color: 1
       modifier: 0
   - capacity: 4
     modifier: 0
     cloakTriggerColor: 0
-    waters: []
+    waters:
+    - color: 3
+      modifier: 0
+    - color: 1
+      modifier: 0
+    - color: 3
+      modifier: 0
+    - color: 0
+      modifier: 0
   - capacity: 4
     modifier: 0
     cloakTriggerColor: 0

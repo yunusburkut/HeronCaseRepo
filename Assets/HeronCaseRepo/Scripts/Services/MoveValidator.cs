@@ -12,12 +12,10 @@ public static class MoveValidator
 
     public static bool IsLevelComplete(List<TubeView> tubes)
     {
-        foreach (var tube in tubes)
+        for (var i = 0; i < tubes.Count; i++)
         {
-            if (!tube.IsEmpty && !tube.IsSolved)
-            {
+            if (!tubes[i].IsEmpty && !tubes[i].IsSolved)
                 return false;
-            }
         }
 
         return true;
